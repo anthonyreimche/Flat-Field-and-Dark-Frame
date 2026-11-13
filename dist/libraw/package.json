@@ -1,0 +1,29 @@
+{
+	"name": "libraw-wasm",
+	"version": "1.4.0",
+	"description": "LibRaw WASM bindings to be able to use it in the browser.",
+	"main": "dist/index.js",
+	"type": "module",
+	"types": "dist/index.d.ts",
+	"directories": {
+		"lib": "lib"
+	},
+	"scripts": {
+		"example": "python -m http.server 9000",
+		"build": "node build.js"
+	},
+	"files": [
+		"dist/*"
+	],
+	"author": "ybouane",
+	"contributors": [
+    "BeseBarni",
+    "lexluthor0304",
+    "gwennlbh",
+    "hrueger"
+  	],
+	"license": "ISC",
+	"devDependencies": {
+		"esbuild": "^0.28.1"
+	}
+}
