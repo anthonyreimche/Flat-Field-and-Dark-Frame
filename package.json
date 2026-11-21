@@ -1,7 +1,7 @@
 {
   "name": "safelight-flat-field-dark-frame",
   "private": true,
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Flat Field and Dark Frame extension for Safelight: dark frame subtraction and flat-field correction from calibration frames.",
   "type": "module",
   "scripts": {

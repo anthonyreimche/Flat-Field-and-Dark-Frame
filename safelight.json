@@ -1,7 +1,7 @@
 {
   "id": "flat-field-dark-frame",
   "name": "Flat Field & Dark Frame",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Calibrates RAW photos with frames you shoot for it: a dark frame takes out hot pixels and fixed-pattern noise, a flat field takes out lens falloff, colour shading and dust shadows. Keeps a library of calibration masters and matches the best one to each photo by camera, ISO, exposure, temperature, lens, aperture and focal length.",
   "author": "Anthony Reimche",
   "main": "dist/index.js",

@@ -939,7 +939,7 @@ var nt = [
 //#endregion
 //#region src/libraw.ts
 function rt(e) {
-	return `${location.origin}/__plugins__/${N}/${e}?v=1.0.0`;
+	return `${location.origin}/__plugins__/${N}/${e}?v=1.0.1`;
 }
 var it = class {
 	worker;
@@ -1393,10 +1393,10 @@ vec3 ffLinear3(vec3 v) { return uApplyBaseCurve ? vec3(ffUnbase(v.r), ffUnbase(v
 vec3 ffBase3(vec3 v) { return vec3(ffBase(v.r), ffBase(v.g), ffBase(v.b)); }
 `}
 float ffJoin(float hi, float lo) { return hi * 1024.0 + lo; }
-vec4 ffAt(sampler2D t, int x, int y) { return texelFetch(t, ivec2(x, y), 0); }
+vec4 ffAt(sampler2D t, highp int x, highp int y) { return texelFetch(t, ivec2(x, y), 0); }
 bool ffSizeIs(vec4 h, vec2 size) { return ffJoin(h.x, h.y) == size.x && ffJoin(h.z, h.w) == size.y; }
-float ffPacked(sampler2D t, int row0, int i) {
-  int texel = i / 4;
+float ffPacked(sampler2D t, highp int row0, highp int i) {
+  highp int texel = i / 4;
   vec4 v = ffAt(t, texel % 256, row0 + texel / 256);
   int k = i - texel * 4;
   return k == 0 ? v.x : k == 1 ? v.y : k == 2 ? v.z : v.w;
@@ -1441,17 +1441,17 @@ float ffPacked(sampler2D t, int row0, int i) {
       vec4 h1 = ffAt(darkMaster, 1, 0);
       vec4 h2 = ffAt(darkMaster, 2, 0);
       vec4 h3 = ffAt(darkMaster, 3, 0);
-      ivec2 tile = ivec2(floor(ffS / ffD0.w));
+      highp ivec2 tile = ivec2(floor(ffS / ffD0.w));
       float w = 0.0;
       if (tile.x >= 0 && tile.y >= 0 && tile.x < int(h3.y) && tile.y < int(h3.z)) {
-        int k = tile.y * int(h3.y) + tile.x;
+        highp int k = tile.y * int(h3.y) + tile.x;
         vec4 te = ffAt(darkMaster, k % 256, int(h2.w) + k / 256);
-        int start = int(ffJoin(te.x, te.y));
+        highp int start = int(ffJoin(te.x, te.y));
         int count = int(te.z);
         float r0 = ${X(1)} + 0.5 * ffSpan;
         for (int i = 0; i < 8; i++) {
           if (i >= count) break;
-          int n = start + i;
+          highp int n = start + i;
           vec4 e = ffAt(darkMaster, n % 256, int(h3.x) + n / 256);
           vec2 hot = vec2(ffJoin(e.x, e.y), ffJoin(e.z, e.w)) + 0.5;
           w = max(w, 1.0 - smoothstep(r0, r0 + 1.0, length(ffS - hot)));
@@ -1461,7 +1461,7 @@ float ffPacked(sampler2D t, int row0, int i) {
       ffE = toSensor * ffX;
       vec2 g = clamp(ffS / h1.z - 0.5, vec2(0.0), h1.xy - 1.0);
       vec3 glow = textureLod(darkMaster, (g + vec2(0.5, h2.x + 0.5)) / vec2(textureSize(darkMaster, 0)), 0.0).rgb;
-      ivec2 p = clamp(ivec2(floor(ffS)), ivec2(0), ivec2(sensorSize) - 1);
+      highp ivec2 p = clamp(ivec2(floor(ffS)), ivec2(0), ivec2(sensorSize) - 1);
       ffE -= glow + vec3(ffPacked(darkMaster, int(h2.y), p.x) + ffPacked(darkMaster, int(h2.z), p.y));
     } else {
       ffE = toSensor * ffX;
