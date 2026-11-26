@@ -5,18 +5,8 @@
 // colour filter layout nor the camera matrix, which the calibration needs.
 // The wasm runs in its own worker; calls on it go one at a time.
 
-import { EXT_ID } from "./params";
 import { frameInfoOf, visibleSize, type FrameInfo, type RawReadout } from "./frame";
-
-declare const __EXT_VERSION__: string;
-
-/** A file under the installed extension's folder. import.meta.url is
- *  undefined in an installed extension's module, so the URL is built the way
- *  core's loader builds it, cache-busted by the version. */
-export function assetUrl(rel: string): string {
-  const v = typeof __EXT_VERSION__ === "string" ? __EXT_VERSION__ : "";
-  return `${location.origin}/__plugins__/${EXT_ID}/${rel}${v ? `?v=${encodeURIComponent(v)}` : ""}`;
-}
+import { api } from "./rt";
 
 type Reply = { out?: unknown; error?: string };
 
@@ -26,7 +16,7 @@ export class LibRawWorker {
   private chain: Promise<unknown> = Promise.resolve();
 
   constructor() {
-    this.worker = new Worker(assetUrl("dist/libraw/worker.js"), { type: "module" });
+    this.worker = new Worker(api.assetUrl("dist/libraw/worker.js"), { type: "module" });
   }
 
   private call(fn: string, args: unknown[], transfer: Transferable[] = []): Promise<unknown> {

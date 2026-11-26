@@ -6,10 +6,10 @@
 // (© the RawTherapee developers, GPL-3.0-or-later).
 
 import { Controller } from "./controller";
-import { makeLibraryDialog } from "./LibraryDialog";
+import { makeLibraryWindow } from "./LibraryWindow";
 import { makePanel } from "./Panel";
-import { ALL_KEYS, EXT_ID, PANEL_ID } from "./params";
-import { React, initRuntime } from "./rt";
+import { ALL_KEYS, EXT_ID, LIBRARY_ID, PANEL_ID } from "./params";
+import { initRuntime } from "./rt";
 import type { SafelightAPI } from "./safelight";
 
 export const MENU_ID = `${EXT_ID}.match`;
@@ -27,24 +27,19 @@ export function activate(host: SafelightAPI): void {
   const active = new Controller(host);
   controller = active;
   void active.start();
-  const Panel = makePanel(active);
-  const Library = makeLibraryDialog(active);
   host.registerPanel({
     id: PANEL_ID,
     title: "Flat Field & Dark Frame",
-    component: () => (
-      <>
-        <Panel />
-        <Library />
-      </>
-    ),
+    component: makePanel(active),
     defaultDock: { module: "develop", direction: "right", width: 268 },
+    modules: ["develop"],
     onReset: () => {
       const develop = host.stores.useDevelopStore.getState();
       develop.setDynParams(Object.fromEntries(ALL_KEYS.map((k) => [k, undefined])));
       void develop.commitEdit("Flat field and dark frame reset");
     },
   });
+  host.registerWindow({ id: LIBRARY_ID, title: "Calibration library", component: makeLibraryWindow(active) });
   host.registerGridMenuItem({
     id: MENU_ID,
     label: (ids) => (ids.length > 1 ? `Match calibration frames (${ids.length})` : "Match calibration frames"),

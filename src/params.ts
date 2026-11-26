@@ -11,6 +11,7 @@ import { MEDIAN_RGB_CAM, columnMajor3, invert3 } from "./model";
 export const EXT_ID = "flat-field-dark-frame";
 export const STAGE_ID = `${EXT_ID}.correct`;
 export const PANEL_ID = `${EXT_ID}.panel`;
+export const LIBRARY_ID = `${EXT_ID}.library`;
 
 export const qualified = (key: string) => `${STAGE_ID}.${key}`;
 

@@ -22,6 +22,7 @@ import type {
   SliderProps,
   StageTextureData,
   ToggleProps,
+  WindowContribution,
 } from "../../src/safelight";
 import { EXT_ID } from "../../src/params";
 import type { MasterRecord } from "../../src/library";
@@ -40,6 +41,9 @@ export interface Rig {
   panels: PanelContribution[];
   stages: ProcessingStageContribution[];
   menus: GridMenuItemContribution[];
+  windows: WindowContribution[];
+  /** The ids api.windows.open was called with, in order. */
+  opened: string[];
   /** The saved edits getEditState hands back, by photo id. */
   edits: Map<string, EditState>;
   /** Stage textures by "{stageId}.{key}#{variant}". */
@@ -98,6 +102,8 @@ export function fakeApi(initial: Record<string, unknown> = {}, photos: CatalogPh
   const panels: PanelContribution[] = [];
   const stages: ProcessingStageContribution[] = [];
   const menus: GridMenuItemContribution[] = [];
+  const windows: WindowContribution[] = [];
+  const opened: string[] = [];
   const edits = new Map<string, EditState>();
   const textures = new Map<string, StageTextureData>();
   const settings = new Map<string, unknown>();
@@ -254,15 +260,18 @@ export function fakeApi(initial: Record<string, unknown> = {}, photos: CatalogPh
   const Section = ({ title, right, children }: { title: React.ReactNode; right?: React.ReactNode; children?: React.ReactNode }) =>
     React.createElement("section", null, React.createElement("h3", null, title), right, children);
   const Button = (p: React.ButtonHTMLAttributes<HTMLButtonElement>) =>
-    React.createElement("button", { onClick: p.onClick, disabled: p.disabled }, p.children);
+    React.createElement("button", { onClick: p.onClick, disabled: p.disabled, title: p.title }, p.children);
 
   const members = {
     version: 1,
     extensionId: EXT_ID,
+    assetUrl: (path: string) => `app://bundle/__plugins__/${EXT_ID}/${path}?v=test`,
     react: React,
     reactDom: { createPortal },
     registerPanel: (c: PanelContribution) => void panels.push(c),
     registerGridMenuItem: (c: GridMenuItemContribution) => void menus.push(c),
+    registerWindow: (c: WindowContribution) => void windows.push(c),
+    windows: { open: (id: string) => void opened.push(id) },
     registerProcessingStage: (c: ProcessingStageContribution) => {
       stages.push(c);
       for (const u of c.uniforms) defaults.set(`${c.id}.${u.key}`, u.default);
@@ -329,6 +338,8 @@ export function fakeApi(initial: Record<string, unknown> = {}, photos: CatalogPh
     panels,
     stages,
     menus,
+    windows,
+    opened,
     edits,
     textures,
     budget: Infinity,

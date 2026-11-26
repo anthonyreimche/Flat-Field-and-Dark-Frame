@@ -1,17 +1,14 @@
 // Flat Field and Dark Frame, a Safelight extension (GPL-3.0-or-later).
 // The Develop panel: each correction's switch, its master (automatic or a
 // pick), what was matched or why nothing was, and the flat's blur and clip
-// control. The library dialogue opens from here.
+// control. The library window opens from here.
 
 import { BLUR_LABELS, type Controller } from "./controller";
 import { BLUR_TYPES, MAX_BLUR_RADIUS, type BlurType } from "./flat";
 import { formatShutter, masterLabel, type MasterSummary } from "./library";
-import { AUTO, DEFAULT_CHOICES, choicePatch, readChoices, type Choices } from "./params";
+import { AUTO, DEFAULT_CHOICES, LIBRARY_ID, choicePatch, readChoices, type Choices } from "./params";
 import type { Side } from "./resolve";
 import { React, api } from "./rt";
-import { openLibrary } from "./LibraryDialog";
-
-const NOTE: React.CSSProperties = { fontSize: "10px", color: "var(--color-text-muted)", lineHeight: 1.4 };
 
 export function useController(c: Controller): Controller {
   const [, tick] = React.useReducer((n: number) => n + 1, 0);
@@ -37,7 +34,7 @@ export function makePanel(controller: Controller) {
   return function FlatFieldDarkFramePanel() {
     const c = useController(controller);
     const { Slider } = api.components;
-    const { Toggle, Select, Stack, Button, Field, Section } = api.ui;
+    const { Toggle, Select, Stack, Button, Field, Section, tokens } = api.ui;
     const scope = api.develop.useParamScope();
     const choices = readChoices(scope.getParam);
     const status = c.status;
@@ -46,7 +43,7 @@ export function makePanel(controller: Controller) {
       scope.setParams(c.withMirrors(choicePatch(patch)));
       if (label) commit(label);
     };
-    const note = (text: string | null) => (text ? <div style={NOTE}>{text}</div> : null);
+    const note = (text: string | null) => (text ? <div style={{ fontSize: "10px", color: tokens.textMuted, lineHeight: 1.4 }}>{text}</div> : null);
 
     return (
       <Stack gap={8} style={{ padding: "6px 8px 8px" }}>
@@ -81,30 +78,33 @@ export function makePanel(controller: Controller) {
                 onChange={(blur) => write({ blur: blur as BlurType }, "Flat field blur")}
               />
             </Field>
-            <Slider
-              label="Blur radius"
-              value={choices.radius}
-              min={0}
-              max={MAX_BLUR_RADIUS}
-              step={1}
-              defaultValue={DEFAULT_CHOICES.radius}
-              onChange={(radius) => write({ radius: Math.round(radius) })}
-              onCommit={() => commit("Flat field blur radius")}
-            />
-            <Slider
-              label="Clip control"
-              value={Math.round(choices.clip * 100)}
-              min={0}
-              max={100}
-              step={1}
-              defaultValue={0}
-              onChange={(v) => write({ clip: Math.min(100, Math.max(0, v)) / 100 })}
-              onCommit={() => commit("Flat field clip control")}
-            />
-            {note("A small radius also takes out dust spots; a large one corrects only the falloff. Clip control keeps the flat from lifting highlights past white.")}
+            <div title="A small radius also takes out dust spots; a large one corrects only the falloff.">
+              <Slider
+                label="Blur radius"
+                value={choices.radius}
+                min={0}
+                max={MAX_BLUR_RADIUS}
+                step={1}
+                defaultValue={DEFAULT_CHOICES.radius}
+                onChange={(radius) => write({ radius: Math.round(radius) })}
+                onCommit={() => commit("Flat field blur radius")}
+              />
+            </div>
+            <div title="Keeps the flat from lifting highlights past white.">
+              <Slider
+                label="Clip control"
+                value={Math.round(choices.clip * 100)}
+                min={0}
+                max={100}
+                step={1}
+                defaultValue={0}
+                onChange={(v) => write({ clip: Math.min(100, Math.max(0, v)) / 100 })}
+                onCommit={() => commit("Flat field clip control")}
+              />
+            </div>
           </Stack>
         </Section>
-        <Button size="sm" onClick={openLibrary}>
+        <Button size="sm" onClick={() => api.windows.open(LIBRARY_ID)}>
           Calibration library…
         </Button>
       </Stack>

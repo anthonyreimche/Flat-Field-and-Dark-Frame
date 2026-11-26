@@ -36,6 +36,13 @@ describe("panel", () => {
     expect(rig.commits).toEqual(["Dark frame on", "Flat field on"]);
   });
 
+  it("explains the blur radius and the clip control in tooltips, not panel text", async () => {
+    const { view } = await mounted({ [UNIFORM_KEYS.flatOn]: 1 });
+    expect(view.container.textContent).not.toMatch(/dust spots/);
+    expect(view.getByText(/^Blur radius/).parentElement?.getAttribute("title")).toMatch(/takes out dust spots/);
+    expect(view.getByText(/^Clip control/).parentElement?.getAttribute("title")).toMatch(/past white/);
+  });
+
   it("says why a photo can't be corrected", async () => {
     const { view } = await mounted({ [UNIFORM_KEYS.darkOn]: 1 }, [photo({ mimeType: "image/jpeg" })]);
     expect(view.container.textContent).toMatch(/RAW photos only/);

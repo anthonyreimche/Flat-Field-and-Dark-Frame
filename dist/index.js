@@ -239,7 +239,7 @@ function S(e, t, n, r) {
 	e.data.set(r, (n * e.width + t) * 4);
 }
 var C = (e) => Math.max(1, Math.ceil(e / 256));
-function ee(e, t, n) {
+function w(e, t, n) {
 	let r = Math.ceil(t / 16), i = /* @__PURE__ */ new Map();
 	for (let a of e) {
 		let e = a % t, o = Math.floor(a / t), s = Math.max(0, Math.floor((e - 4) / 16)), c = Math.min(r - 1, Math.floor((e + 1 + 4) / 16)), l = Math.max(0, Math.floor((o - 4) / 16)), u = Math.min(Math.ceil(n / 16) - 1, Math.floor((o + 1 + 4) / 16));
@@ -250,8 +250,8 @@ function ee(e, t, n) {
 	}
 	return i;
 }
-function te(e, t) {
-	let n = Math.ceil(e.width / 16), r = Math.ceil(e.height / 16), i = ee(e.hot, e.width, e.height), a = 0;
+function ee(e, t) {
+	let n = Math.ceil(e.width / 16), r = Math.ceil(e.height / 16), i = w(e.hot, e.width, e.height), a = 0;
 	for (let e of i.values()) a += e.length;
 	let o = 1 + e.glow.height, s = o + C(Math.ceil(e.width / 4)), c = s + C(Math.ceil(e.height / 4)), l = c + C(n * r), u = x(256, l + C(a)), [d, f] = y(t);
 	S(u, 0, 0, [
@@ -306,7 +306,7 @@ function te(e, t) {
 	}
 	return u;
 }
-function ne(e, t, n, r) {
+function te(e, t, n, r) {
 	let i = x(Math.max(4, e.width), e.height + 1), [a, o] = y(r);
 	S(i, 0, 0, [
 		v,
@@ -325,35 +325,35 @@ function ne(e, t, n, r) {
 }
 //#endregion
 //#region src/flat-job.ts
-function re(e, t) {
-	return ne(g(e, t.blur, t.radius), e.width, e.height, t.name);
+function ne(e, t) {
+	return te(g(e, t.blur, t.radius), e.width, e.height, t.name);
 }
 //#endregion
 //#region src/flat-worker.ts?worker&inline
-var ie = "(function(){function e(e,t,n,r,i=3){let a=Math.min(Math.max(t/e.block-.5,0),e.width-1),o=Math.min(Math.max(n/e.block-.5,0),e.height-1),s=Math.floor(a),c=Math.floor(o),l=Math.min(s+1,e.width-1),u=Math.min(c+1,e.height-1),d=a-s,f=o-c,p=(t,n)=>e.data[(n*e.width+t)*i+r];return(p(s,c)*(1-d)+p(l,c)*d)*(1-f)+(p(s,u)*(1-d)+p(l,u)*d)*f}function t(e,t,n,r){if(r<=0)return e;let i=new Float32Array(e.length);for(let a=0;a<n*t;a+=t){let n=0,o=0,s=-1;for(let c=0;c<t;c++){let l=Math.max(0,c-r),u=Math.min(t-1,c+r);for(;s<u;)n+=e[a+ ++s];for(;o<l;)n-=e[a+o++];i[a+c]=n/(u-l+1)}}return i}function n(e,t,n,r){if(r<=0)return e;let i=new Float32Array(e.length),a=new Float64Array(t),o=0,s=-1;for(let c=0;c<n;c++){let l=Math.max(0,c-r),u=Math.min(n-1,c+r);for(;s<u;){let n=++s*t;for(let r=0;r<t;r++)a[r]+=e[n+r]}for(;o<l;){let n=o++*t;for(let r=0;r<t;r++)a[r]-=e[n+r]}let d=u-l+1;for(let e=0,n=c*t;e<t;e++)i[n+e]=a[e]/d}return i}function r(e,t){let n=new Float32Array(e.width*e.height);for(let r=0;r<n.length;r++)n[r]=e.data[r*3+t];return n}function i(e,t){let n=2*Math.ceil(Math.max(0,Math.min(200,e))/2);return{area:Math.round(n/t),line:Math.round(2*n/t)}}function a(e,r,a,o){let{area:s,line:c}=i(o,r.block);return a===`area`?n(t(e,r.width,r.height,s),r.width,r.height,s):a===`vertical`?n(e,r.width,r.height,c):t(e,r.width,r.height,c)}function o(t,n,i){let o=t.grid,s=new Float32Array(o.data.length),c=t.width/2,l=t.height/2;for(let t=0;t<3;t++){let u=r(o,t),d=a(u,o,n===`vertical-horizontal`?`area`:n,i),f=e({...o,data:d},c,l,0,1),p=n===`vertical-horizontal`?a(u,o,`horizontal`,i):null,m=n===`vertical-horizontal`?a(u,o,`vertical`,i):null;for(let e=0;e<d.length;e++){let n=d[e],r=n<=1||f<=1?1:f/n;p&&m&&n>1&&(r*=Math.max(1e-5,n*n/Math.max(1e-5,p[e]*m[e]))),s[e*3+t]=r}}if(!t.redBlueKnown)for(let e=0;e<s.length;e+=3)s[e]=s[e+2]=(s[e]+s[e+2])/2;return{...o,data:s}}function s(e){let t=2166136261;for(let n=0;n<e.length;n++)t^=e.charCodeAt(n),t=Math.imul(t,16777619)>>>0;return[t>>>11&2047,t&2047]}let c=e=>[Math.floor(e/1024),e%1024];function l(e,t){return{data:new Float32Array(e*t*4),width:e,height:t}}function u(e,t,n,r){e.data.set(r,(n*e.width+t)*4)}function d(e,t,n,r){let i=l(Math.max(4,e.width),e.height+1),[a,o]=s(r);u(i,0,0,[1033,a,o,e.block]),u(i,1,0,[e.width,e.height,0,0]),u(i,2,0,[...c(t),...c(n)]);let d=i.data;for(let t=0;t<e.height;t++)for(let n=0,r=t*e.width*3,a=(t+1)*i.width*4;n<e.width;n++,r+=3,a+=4)d[a]=e.data[r],d[a+1]=e.data[r+1],d[a+2]=e.data[r+2],d[a+3]=1;return i}function f(e,t){return d(o(e,t.blur,t.radius),e.width,e.height,t.name)}function p(){let e=/* @__PURE__ */ new Map;return t=>{if(`forget`in t)return e.delete(t.forget),null;t.flat&&e.set(t.master,t.flat);let n=e.get(t.master);if(!n)return{error:`master ${t.master} wasn't sent`};try{return{texture:f(n,t.need)}}catch(e){return{error:e instanceof Error?e.message:String(e)}}}}let m=p();onmessage=e=>{let t=m(e.data);t&&postMessage(t,{transfer:`texture`in t?[t.texture.data.buffer]:[]})}})();\n//# sourceMappingURL=flat-worker-9YEh8pNh.js.map", ae = typeof self < "u" && self.Blob && new Blob(["(self.URL || self.webkitURL).revokeObjectURL(self.location.href);", ie], { type: "text/javascript;charset=utf-8" });
-function oe(e) {
+var re = "(function(){function e(e,t,n,r,i=3){let a=Math.min(Math.max(t/e.block-.5,0),e.width-1),o=Math.min(Math.max(n/e.block-.5,0),e.height-1),s=Math.floor(a),c=Math.floor(o),l=Math.min(s+1,e.width-1),u=Math.min(c+1,e.height-1),d=a-s,f=o-c,p=(t,n)=>e.data[(n*e.width+t)*i+r];return(p(s,c)*(1-d)+p(l,c)*d)*(1-f)+(p(s,u)*(1-d)+p(l,u)*d)*f}function t(e,t,n,r){if(r<=0)return e;let i=new Float32Array(e.length);for(let a=0;a<n*t;a+=t){let n=0,o=0,s=-1;for(let c=0;c<t;c++){let l=Math.max(0,c-r),u=Math.min(t-1,c+r);for(;s<u;)n+=e[a+ ++s];for(;o<l;)n-=e[a+o++];i[a+c]=n/(u-l+1)}}return i}function n(e,t,n,r){if(r<=0)return e;let i=new Float32Array(e.length),a=new Float64Array(t),o=0,s=-1;for(let c=0;c<n;c++){let l=Math.max(0,c-r),u=Math.min(n-1,c+r);for(;s<u;){let n=++s*t;for(let r=0;r<t;r++)a[r]+=e[n+r]}for(;o<l;){let n=o++*t;for(let r=0;r<t;r++)a[r]-=e[n+r]}let d=u-l+1;for(let e=0,n=c*t;e<t;e++)i[n+e]=a[e]/d}return i}function r(e,t){let n=new Float32Array(e.width*e.height);for(let r=0;r<n.length;r++)n[r]=e.data[r*3+t];return n}function i(e,t){let n=2*Math.ceil(Math.max(0,Math.min(200,e))/2);return{area:Math.round(n/t),line:Math.round(2*n/t)}}function a(e,r,a,o){let{area:s,line:c}=i(o,r.block);return a===`area`?n(t(e,r.width,r.height,s),r.width,r.height,s):a===`vertical`?n(e,r.width,r.height,c):t(e,r.width,r.height,c)}function o(t,n,i){let o=t.grid,s=new Float32Array(o.data.length),c=t.width/2,l=t.height/2;for(let t=0;t<3;t++){let u=r(o,t),d=a(u,o,n===`vertical-horizontal`?`area`:n,i),f=e({...o,data:d},c,l,0,1),p=n===`vertical-horizontal`?a(u,o,`horizontal`,i):null,m=n===`vertical-horizontal`?a(u,o,`vertical`,i):null;for(let e=0;e<d.length;e++){let n=d[e],r=n<=1||f<=1?1:f/n;p&&m&&n>1&&(r*=Math.max(1e-5,n*n/Math.max(1e-5,p[e]*m[e]))),s[e*3+t]=r}}if(!t.redBlueKnown)for(let e=0;e<s.length;e+=3)s[e]=s[e+2]=(s[e]+s[e+2])/2;return{...o,data:s}}function s(e){let t=2166136261;for(let n=0;n<e.length;n++)t^=e.charCodeAt(n),t=Math.imul(t,16777619)>>>0;return[t>>>11&2047,t&2047]}let c=e=>[Math.floor(e/1024),e%1024];function l(e,t){return{data:new Float32Array(e*t*4),width:e,height:t}}function u(e,t,n,r){e.data.set(r,(n*e.width+t)*4)}function d(e,t,n,r){let i=l(Math.max(4,e.width),e.height+1),[a,o]=s(r);u(i,0,0,[1033,a,o,e.block]),u(i,1,0,[e.width,e.height,0,0]),u(i,2,0,[...c(t),...c(n)]);let d=i.data;for(let t=0;t<e.height;t++)for(let n=0,r=t*e.width*3,a=(t+1)*i.width*4;n<e.width;n++,r+=3,a+=4)d[a]=e.data[r],d[a+1]=e.data[r+1],d[a+2]=e.data[r+2],d[a+3]=1;return i}function f(e,t){return d(o(e,t.blur,t.radius),e.width,e.height,t.name)}function p(){let e=/* @__PURE__ */ new Map;return t=>{if(`forget`in t)return e.delete(t.forget),null;t.flat&&e.set(t.master,t.flat);let n=e.get(t.master);if(!n)return{error:`master ${t.master} wasn't sent`};try{return{texture:f(n,t.need)}}catch(e){return{error:e instanceof Error?e.message:String(e)}}}}let m=p();onmessage=e=>{let t=m(e.data);t&&postMessage(t,{transfer:`texture`in t?[t.texture.data.buffer]:[]})}})();\n//# sourceMappingURL=flat-worker-9YEh8pNh.js.map", ie = typeof self < "u" && self.Blob && new Blob(["(self.URL || self.webkitURL).revokeObjectURL(self.location.href);", re], { type: "text/javascript;charset=utf-8" });
+function ae(e) {
 	let t;
 	try {
-		if (t = ae && (self.URL || self.webkitURL).createObjectURL(ae), !t) throw "";
+		if (t = ie && (self.URL || self.webkitURL).createObjectURL(ie), !t) throw "";
 		let n = new Worker(t, { name: e?.name });
 		return n.addEventListener("error", () => {
 			(self.URL || self.webkitURL).revokeObjectURL(t);
 		}), n;
 	} catch {
-		return new Worker("data:text/javascript;charset=utf-8," + encodeURIComponent(ie), { name: e?.name });
+		return new Worker("data:text/javascript;charset=utf-8," + encodeURIComponent(re), { name: e?.name });
 	}
 }
 //#endregion
 //#region src/flat-maker.ts
-var se = {
+var oe = {
 	make: async (e, t, n) => {
 		n?.throwIfAborted();
 		let r = await t();
-		return r && re(r, e);
+		return r && ne(r, e);
 	},
 	forget: () => void 0,
 	dispose: () => void 0
-}, ce = 3e4, le = class extends Error {}, ue = class {
+}, se = 3e4, ce = class extends Error {}, le = class {
 	open;
 	worker = null;
 	sent = /* @__PURE__ */ new Set();
@@ -362,7 +362,7 @@ var se = {
 	idle = null;
 	stopped = !1;
 	abandon = null;
-	constructor(e = () => new oe({ name: "Flat field blur" })) {
+	constructor(e = () => new ae({ name: "Flat field blur" })) {
 		this.open = e;
 	}
 	make(e, t, n) {
@@ -391,7 +391,7 @@ var se = {
 		if (this.stopped) throw Error("the flat field maker was stopped");
 		this.idle && clearTimeout(this.idle);
 		let n = this.start();
-		if (!n) return se.make(e, t);
+		if (!n) return oe.make(e, t);
 		let r = null;
 		if (!this.sent.has(e.id)) {
 			if (r = await t(), !r) return null;
@@ -400,7 +400,7 @@ var se = {
 		try {
 			return await new Promise((t, i) => {
 				this.abandon = i, n.onmessage = ({ data: e }) => "texture" in e ? t(e.texture) : i(Error(e.error)), n.onerror = (e) => {
-					e.preventDefault(), i(new le(e.message || "the flat field worker failed"));
+					e.preventDefault(), i(new ce(e.message || "the flat field worker failed"));
 				}, this.sent.add(e.id), n.postMessage({
 					master: e.id,
 					flat: r ?? void 0,
@@ -408,17 +408,17 @@ var se = {
 				});
 			});
 		} catch (n) {
-			if (!(n instanceof le)) throw n;
-			return console.warn("[flat-field-dark-frame] the flat field worker failed; flats are made on the main thread from now on", n), this.failed = !0, this.end(), se.make(e, t);
+			if (!(n instanceof ce)) throw n;
+			return console.warn("[flat-field-dark-frame] the flat field worker failed; flats are made on the main thread from now on", n), this.failed = !0, this.end(), oe.make(e, t);
 		} finally {
-			this.abandon = null, this.stopped || (this.idle = setTimeout(() => this.end(), ce));
+			this.abandon = null, this.stopped || (this.idle = setTimeout(() => this.end(), se));
 		}
 	}
-}, w = (e) => typeof e == "number" && Number.isFinite(e) ? e : 0, de = (e) => typeof e == "string" ? e.trim() : "", T = (e) => typeof e == "object" && e ? e : {}, fe = (e, t) => {
+}, T = (e) => typeof e == "number" && Number.isFinite(e) ? e : 0, ue = (e) => typeof e == "string" ? e.trim() : "", E = (e) => typeof e == "object" && e ? e : {}, de = (e, t) => {
 	let n = Array.isArray(e) ? e : [];
-	return Array.from({ length: t }, (e, t) => w(n[t]));
+	return Array.from({ length: t }, (e, t) => T(n[t]));
 };
-function pe(e) {
+function fe(e) {
 	for (let t of [
 		"SensorTemperature",
 		"CameraTemperature",
@@ -431,16 +431,16 @@ function pe(e) {
 	}
 	return null;
 }
-function me(e) {
+function pe(e) {
 	if (!Array.isArray(e) || e.length < 3) return null;
-	let t = e.slice(0, 3).map((e) => fe(e, 3));
+	let t = e.slice(0, 3).map((e) => de(e, 3));
 	return t.some((e) => e.every((e) => e === 0)) ? null : [
 		t[0],
 		t[1],
 		t[2]
 	];
 }
-function he(e) {
+function me(e) {
 	let t = e.raw_width - e.left_margin, n = e.raw_height - e.top_margin, { width: r, height: i } = e;
 	return r <= t && i <= n ? {
 		width: r,
@@ -453,37 +453,37 @@ function he(e) {
 		height: Math.min(i, n)
 	};
 }
-function ge(e, t) {
-	let n = T(e), r = T(n.color_data), i = T(n.lens), a = n.timestamp instanceof Date ? n.timestamp.getTime() : typeof n.timestamp == "number" ? n.timestamp * 1e3 : NaN;
+function he(e, t) {
+	let n = E(e), r = E(n.color_data), i = E(n.lens), a = n.timestamp instanceof Date ? n.timestamp.getTime() : typeof n.timestamp == "number" ? n.timestamp * 1e3 : NaN;
 	return {
-		make: de(n.camera_make),
-		model: de(n.camera_model),
-		lens: de(i.Lens),
-		iso: w(n.iso_speed),
-		shutter: w(n.shutter),
-		aperture: w(n.aperture),
-		focal: w(n.focal_len),
-		temperature: pe(T(n.metadata_common)),
+		make: ue(n.camera_make),
+		model: ue(n.camera_model),
+		lens: ue(i.Lens),
+		iso: T(n.iso_speed),
+		shutter: T(n.shutter),
+		aperture: T(n.aperture),
+		focal: T(n.focal_len),
+		temperature: fe(E(n.metadata_common)),
 		timestamp: Number.isFinite(a) && a > 0 ? a : null,
 		width: t.width,
 		height: t.height,
-		flip: w(n.flip),
-		filters: w(n.filters) >>> 0,
-		black: w(r.black),
-		white: w(r.maximum),
-		camMul: fe(r.cam_mul, 4),
-		preMul: fe(r.pre_mul, 4),
-		rgbCam: me(r.rgb_cam)
+		flip: T(n.flip),
+		filters: T(n.filters) >>> 0,
+		black: T(r.black),
+		white: T(r.maximum),
+		camMul: de(r.cam_mul, 4),
+		preMul: de(r.pre_mul, 4),
+		rgbCam: pe(r.rgb_cam)
 	};
 }
-function _e(e) {
+function ge(e) {
 	return e.width < 16 || e.height < 16 ? "LibRaw read no sensor data from it" : e.filters === 0 ? "its sensor has no colour filter mosaic (a monochrome, Foveon or already demosaiced file)" : e.filters !== 9 && !t(e.filters) ? "its sensor layout isn't Bayer or X-Trans" : e.white > e.black ? null : "LibRaw reported no white level for it";
 }
-function ve(e) {
+function _e(e) {
 	return e.filters === 9 ? null : t(e.filters);
 }
-function ye(e) {
-	let { width: t, height: n } = he(e), r = new Uint16Array(t * n);
+function ve(e) {
+	let { width: t, height: n } = me(e), r = new Uint16Array(t * n);
 	for (let i = 0; i < n; i++) {
 		let n = (i + e.top_margin) * e.raw_width + e.left_margin;
 		r.set(e.data.subarray(n, n + t), i * t);
@@ -494,7 +494,7 @@ function ye(e) {
 		height: n
 	};
 }
-function be(e) {
+function ye(e) {
 	let t = e.camMul[0] > 0 && e.camMul[2] > 0 ? e.camMul : e.preMul, n = t[0] > 0 ? t[0] : 1, r = t[1] > 0 ? t[1] : 1, i = t[2] > 0 ? t[2] : 1, a = Math.min(n, r, i);
 	return [
 		n / a,
@@ -504,34 +504,34 @@ function be(e) {
 }
 //#endregion
 //#region src/levels.ts
-var xe = 8;
-function E(e) {
+var be = 8;
+function D(e) {
 	let t = Float64Array.from(e).sort();
 	if (t.length === 0) return 0;
 	let n = t.length >> 1;
 	return t.length % 2 ? t[n] : (t[n - 1] + t[n]) / 2;
 }
-function Se(t, n) {
+function xe(t, n) {
 	let { left_margin: r, top_margin: i, raw_width: a, raw_height: o, data: s } = t, c = [
 		[],
 		[],
 		[]
 	], l = (t, o) => {
-		let l = n ? e(n, Ce(t - r, n.size), Ce(o - i, n.size)) : 1;
+		let l = n ? e(n, Se(t - r, n.size), Se(o - i, n.size)) : 1;
 		c[l].length < 2e5 && c[l].push(s[o * a + t]);
 	};
-	if (r >= xe) for (let e = i; e < o; e += 3) for (let t = 2; t < r - 2; t++) l(t, e);
-	if (i >= xe) for (let e = 2; e < i - 2; e++) for (let t = r; t < a; t += 3) l(t, e);
+	if (r >= be) for (let e = i; e < o; e += 3) for (let t = 2; t < r - 2; t++) l(t, e);
+	if (i >= be) for (let e = 2; e < i - 2; e++) for (let t = r; t < a; t += 3) l(t, e);
 	if (c.every((e) => e.length === 0)) return null;
-	let u = E(c.flat());
+	let u = D(c.flat());
 	return [
 		0,
 		1,
 		2
-	].map((e) => c[e].length ? E(c[e]) : u);
+	].map((e) => c[e].length ? D(c[e]) : u);
 }
-var Ce = (e, t) => (e % t + t) % t;
-function we(e, t) {
+var Se = (e, t) => (e % t + t) % t;
+function Ce(e, t) {
 	return e <= 0 && t && t.some((e) => e > 0) ? {
 		black: t,
 		source: "masked"
@@ -544,7 +544,7 @@ function we(e, t) {
 		source: "file"
 	};
 }
-var Te = .001, Ee = 1e5, De = class {
+var we = .001, Te = 1e5, Ee = class {
 	sum = null;
 	count = 0;
 	width = 0;
@@ -565,21 +565,21 @@ var Te = .001, Ee = 1e5, De = class {
 		return this.count;
 	}
 };
-function Oe(t, n, r, i, a) {
+function De(t, n, r, i, a) {
 	let o = (t) => r ? e(r, t % n, Math.floor(t / n)) : 1, s = a - (i[0] + i[1] + i[2]) / 3, c = [
 		[],
 		[],
 		[]
 	], l = Math.max(1, Math.floor(t.length / 3e5));
 	for (let e = 0; e < t.length; e += l) c[o(e)].push(t[e]);
-	let u = c.map((e) => e.length ? E(e) : NaN).map((e, t) => Number.isNaN(e) ? i[t] : e), d = u.some((e, t) => i[t] - e > .002 * s), f = i.every((e) => e <= 0) && u.some((e) => e > .02 * s), p = d || f, m = p ? u : i, h = new Float32Array(t.length);
+	let u = c.map((e) => e.length ? D(e) : NaN).map((e, t) => Number.isNaN(e) ? i[t] : e), d = u.some((e, t) => i[t] - e > .002 * s), f = i.every((e) => e <= 0) && u.some((e) => e > .02 * s), p = d || f, m = p ? u : i, h = new Float32Array(t.length);
 	for (let e = 0; e < t.length; e++) h[e] = (t[e] - m[o(e)]) / s;
 	return {
 		signal: h,
 		estimated: p
 	};
 }
-function ke(t, n, r, i) {
+function Oe(t, n, r, i) {
 	let a = Math.max(6, Math.ceil(Math.max(n, r) / 256)), s = o(n, r, a), c = new Float32Array(s.width * s.height * 3), l = [
 		[],
 		[],
@@ -588,8 +588,8 @@ function ke(t, n, r, i) {
 	for (let o = 0; o < s.height; o++) for (let u = 0; u < s.width; u++) {
 		for (let e of l) e.length = 0;
 		for (let s = o * a; s < Math.min(r, (o + 1) * a); s++) for (let r = u * a; r < Math.min(n, (u + 1) * a); r++) l[i ? e(i, r, s) : 1].push(t[s * n + r]);
-		let d = E(l.flat());
-		for (let e = 0; e < 3; e++) c[(o * s.width + u) * 3 + e] = i && l[e].length ? E(l[e]) : d;
+		let d = D(l.flat());
+		for (let e = 0; e < 3; e++) c[(o * s.width + u) * 3 + e] = i && l[e].length ? D(l[e]) : d;
 	}
 	return {
 		block: a,
@@ -597,65 +597,65 @@ function ke(t, n, r, i) {
 		data: c
 	};
 }
-var Ae = (e, t) => Math.max(1, Math.floor(e / t));
-function je(t, n, r, i, a, o) {
-	let { signal: c, estimated: l } = Oe(t, n, i, a, o), u = ke(c, n, r, i), d = (t, n) => i ? e(i, t, n) : 1, f = new Float32Array(c.length);
+var ke = (e, t) => Math.max(1, Math.floor(e / t));
+function Ae(t, n, r, i, a, o) {
+	let { signal: c, estimated: l } = De(t, n, i, a, o), u = Oe(c, n, r, i), d = (t, n) => i ? e(i, t, n) : 1, f = new Float32Array(c.length);
 	for (let e = 0; e < r; e++) for (let t = 0; t < n; t++) {
 		let r = e * n + t;
 		f[r] = c[r] - s(u, t + .5, e + .5, d(t, e));
 	}
-	let p = new Float32Array(n), m = Ae(r, 1500), h = [];
+	let p = new Float32Array(n), m = ke(r, 1500), h = [];
 	for (let e = 0; e < n; e++) {
 		h.length = 0;
 		for (let t = 0; t < r; t += m) h.push(f[t * n + e]);
-		p[e] = E(h);
+		p[e] = D(h);
 	}
-	let g = new Float32Array(r), _ = Ae(n, 1500), v = [];
+	let g = new Float32Array(r), _ = ke(n, 1500), v = [];
 	for (let e = 0; e < r; e++) {
 		v.length = 0;
 		for (let t = 0; t < n; t += _) v.push(f[e * n + t] - p[t]);
-		g[e] = E(v);
+		g[e] = D(v);
 	}
 	for (let e = 0; e < r; e++) for (let t = 0; t < n; t++) f[e * n + t] -= p[t] + g[e];
-	let y = [], b = Ae(f.length, 4e5);
+	let y = [], b = ke(f.length, 4e5);
 	for (let e = 0; e < f.length; e += b) y.push(Math.abs(f[e]));
-	let x = 1.4826 * E(y), S = Math.max(8 * x, Te), C = [];
+	let x = 1.4826 * D(y), S = Math.max(8 * x, we), C = [];
 	for (let e = 0; e < f.length; e++) f[e] > S && C.push(e);
 	C.sort((e, t) => f[t] - f[e]);
-	let ee = E(Array.from({ length: Math.ceil(c.length / b) }, (e, t) => c[t * b]));
+	let w = D(Array.from({ length: Math.ceil(c.length / b) }, (e, t) => c[t * b]));
 	return {
 		width: n,
 		height: r,
 		glow: u,
 		cols: p,
 		rows: g,
-		hot: Uint32Array.from(C.slice(0, Ee)),
-		level: ee,
+		hot: Uint32Array.from(C.slice(0, Te)),
+		level: w,
 		noise: x,
 		blackEstimated: l
 	};
 }
 //#endregion
 //#region src/match.ts
-var D = (e) => e.trim().toLowerCase().replace(/\s+/g, " ");
-function O(e, t) {
-	return D(e.model) !== "" && D(e.make) === D(t.make) && D(e.model) === D(t.model);
-}
+var O = (e) => e.trim().toLowerCase().replace(/\s+/g, " ");
 function k(e, t) {
+	return O(e.model) !== "" && O(e.make) === O(t.make) && O(e.model) === O(t.model);
+}
+function je(e, t) {
 	return e.width === t.width && e.height === t.height;
 }
 function Me(e, t) {
-	return D(e.lens) === D(t.lens);
+	return O(e.lens) === O(t.lens);
 }
-var A = (e, t) => e > 0 && t > 0 ? Math.abs(Math.log2(e / t)) : 0, Ne = (e, t) => e !== null && t !== null ? Math.abs(e - t) / 864e5 : 0;
-function Pe(e, t) {
-	let n = e.temperature !== null && t.temperature !== null ? Math.abs(e.temperature - t.temperature) / 5 : 0;
-	return A(e.iso, t.iso) + A(e.shutter, t.shutter) + n + Ne(e.timestamp, t.timestamp) / 3650;
-}
+var Ne = (e, t) => e > 0 && t > 0 ? Math.abs(Math.log2(e / t)) : 0, Pe = (e, t) => e !== null && t !== null ? Math.abs(e - t) / 864e5 : 0;
 function Fe(e, t) {
-	return 2 * A(e.aperture, t.aperture) + A(e.focal, t.focal) + Ne(e.timestamp, t.timestamp) / 3650;
+	let n = e.temperature !== null && t.temperature !== null ? Math.abs(e.temperature - t.temperature) / 5 : 0;
+	return Ne(e.iso, t.iso) + Ne(e.shutter, t.shutter) + n + Pe(e.timestamp, t.timestamp) / 3650;
 }
-function Ie(e, t, n) {
+function Ie(e, t) {
+	return 2 * Ne(e.aperture, t.aperture) + Ne(e.focal, t.focal) + Pe(e.timestamp, t.timestamp) / 3650;
+}
+function Le(e, t, n) {
 	let r = null;
 	for (let i of t) {
 		let t = n(e, i.shot);
@@ -669,25 +669,25 @@ function Ie(e, t, n) {
 		reason: "no match"
 	};
 }
-function Le(e, t) {
-	let n = t.filter((t) => t.kind === "dark" && O(e, t.shot));
+function Re(e, t) {
+	let n = t.filter((t) => t.kind === "dark" && k(e, t.shot));
 	if (n.length === 0) return {
 		master: null,
 		reason: `No dark frame from the ${e.model || "camera"} yet.`
 	};
-	let r = n.filter((t) => k(e, t.shot));
+	let r = n.filter((t) => je(e, t.shot));
 	return r.length === 0 ? {
 		master: null,
 		reason: "No dark frame at this photo's frame size."
-	} : Ie(e, r, Pe);
+	} : Le(e, r, Fe);
 }
-function Re(e, t) {
-	let n = t.filter((t) => t.kind === "flat" && O(e, t.shot));
+function ze(e, t) {
+	let n = t.filter((t) => t.kind === "flat" && k(e, t.shot));
 	if (n.length === 0) return {
 		master: null,
 		reason: `No flat field from the ${e.model || "camera"} yet.`
 	};
-	let r = n.filter((t) => k(e, t.shot));
+	let r = n.filter((t) => je(e, t.shot));
 	if (r.length === 0) return {
 		master: null,
 		reason: "No flat field at this photo's frame size."
@@ -696,14 +696,14 @@ function Re(e, t) {
 	return i.length === 0 ? {
 		master: null,
 		reason: e.lens ? `No flat field with the ${e.lens}.` : "No flat field without a recorded lens."
-	} : Ie(e, i, Fe);
+	} : Le(e, i, Ie);
 }
-function ze(e, t) {
-	return O(e, t.shot) ? k(e, t.shot) ? null : "It's at another frame size." : "It's from another camera.";
+function Be(e, t) {
+	return k(e, t.shot) ? je(e, t.shot) ? null : "It's at another frame size." : "It's from another camera.";
 }
 //#endregion
 //#region src/library.ts
-function Be(e) {
+function Ve(e) {
 	return {
 		make: e.make,
 		model: e.model,
@@ -718,36 +718,36 @@ function Be(e) {
 		height: e.height
 	};
 }
-var j = class extends Error {}, M = (e) => e.length ? E(e) : 0;
-function Ve(e, t) {
+var A = class extends Error {}, j = (e) => e.length ? D(e) : 0;
+function He(e, t) {
 	let n = e.map((e) => e.temperature).filter((e) => e !== null), r = e.map((e) => e.timestamp).filter((e) => e !== null);
 	return {
 		...t,
-		iso: M(e.map((e) => e.iso)),
-		shutter: M(e.map((e) => e.shutter)),
-		aperture: M(e.map((e) => e.aperture)),
-		focal: M(e.map((e) => e.focal)),
+		iso: j(e.map((e) => e.iso)),
+		shutter: j(e.map((e) => e.shutter)),
+		aperture: j(e.map((e) => e.aperture)),
+		focal: j(e.map((e) => e.focal)),
 		temperature: n.length ? n.reduce((e, t) => e + t, 0) / n.length : null,
 		timestamp: r.length ? Math.max(...r) : null
 	};
 }
-async function He(e, t, n, r, o = Date.now()) {
-	if (t < 1) throw new j("Pick at least one frame.");
-	let s = new De(), c = [], l = null;
+async function Ue(e, t, n, r, o = Date.now()) {
+	if (t < 1) throw new A("Pick at least one frame.");
+	let s = new Ee(), c = [], l = null;
 	for (let r = 0; r < t; r++) {
-		let { name: t, info: i, readout: a } = await n(r), o = _e(i);
-		if (o) throw new j(`${t} can't be used: ${o}.`);
-		let u = Be(i);
+		let { name: t, info: i, readout: a } = await n(r), o = ge(i);
+		if (o) throw new A(`${t} can't be used: ${o}.`);
+		let u = Ve(i);
 		if (l) {
-			if (!O(l.shot, u)) throw new j(`${t} is from another camera (${u.make} ${u.model}).`);
-			if (!k(l.shot, u)) throw new j(`${t} has another frame size (${u.width} × ${u.height}).`);
-			if (e === "flat" && !Me(l.shot, u)) throw new j(`${t} was shot with another lens (${u.lens || "none recorded"}).`);
+			if (!k(l.shot, u)) throw new A(`${t} is from another camera (${u.make} ${u.model}).`);
+			if (!je(l.shot, u)) throw new A(`${t} has another frame size (${u.width} × ${u.height}).`);
+			if (e === "flat" && !Me(l.shot, u)) throw new A(`${t} was shot with another lens (${u.lens || "none recorded"}).`);
 		} else l = {
 			info: i,
 			readout: a,
 			shot: u
 		};
-		let d = ye(a);
+		let d = ve(a);
 		s.add({
 			width: d.width,
 			height: d.height,
@@ -762,14 +762,14 @@ async function He(e, t, n, r, o = Date.now()) {
 			timestamp: u.timestamp
 		});
 	}
-	if (!l) throw new j("Pick at least one frame.");
-	let { info: d, readout: f } = l, p = s.width, m = s.height, h = [], g = ve(d), _ = we(d.black, Se(f, g));
+	if (!l) throw new A("Pick at least one frame.");
+	let { info: d, readout: f } = l, p = s.width, m = s.height, h = [], g = _e(d), _ = Ce(d.black, xe(f, g));
 	_.source === "masked" && h.push("Black level measured from the sensor's masked border.");
 	let v = s.mean(), y = {
 		id: r,
 		kind: e,
 		created: o,
-		shot: Ve(c, l.shot),
+		shot: He(c, l.shot),
 		frames: c,
 		black: _.black,
 		blackSource: _.source,
@@ -777,7 +777,7 @@ async function He(e, t, n, r, o = Date.now()) {
 		notes: h
 	};
 	if (e === "dark") {
-		let e = je(v, p, m, g, _.black, d.white);
+		let e = Ae(v, p, m, g, _.black, d.white);
 		return e.blackEstimated && (y.blackSource = "frame", h.push("The file's black level didn't fit these frames, so their own median level stands in for it: dark current that is even across the frame isn't taken off.")), g || h.push("X-Trans: the dark's glow is taken off all colours alike."), y.hot = e.hot.length, y.level = e.level, {
 			summary: y,
 			dark: e
@@ -789,163 +789,32 @@ async function He(e, t, n, r, o = Date.now()) {
 		let e = a(i(v, p, m, _.black[1]), d.camMul);
 		b = e.pattern, x = e.redBlueKnown, x || h.push("X-Trans: red and blue read too alike to tell apart, so their shading is corrected together.");
 	}
-	let S = u(v, p, m, b, _.black, x), C = Math.min(...S.grid.data.filter((e) => e > 1)), ee = S.grid.data[(Math.floor(S.grid.height / 2) * S.grid.width + Math.floor(S.grid.width / 2)) * 3 + 1];
-	return y.strongest = C > 0 && ee > 0 ? ee / C : void 0, {
+	let S = u(v, p, m, b, _.black, x), C = Math.min(...S.grid.data.filter((e) => e > 1)), w = S.grid.data[(Math.floor(S.grid.height / 2) * S.grid.width + Math.floor(S.grid.width / 2)) * 3 + 1];
+	return y.strongest = C > 0 && w > 0 ? w / C : void 0, {
 		summary: y,
 		flat: S
 	};
 }
-function Ue(e) {
+function M(e) {
 	let t = [e.kind === "dark" ? "Dark" : "Flat"];
 	return e.kind === "flat" && e.shot.lens && t.push(e.shot.lens), e.kind === "flat" && e.shot.focal > 0 && t.push(`${Math.round(e.shot.focal)} mm`), e.kind === "flat" && e.shot.aperture > 0 && t.push(`f/${e.shot.aperture.toFixed(1).replace(/\.0$/, "")}`), e.kind === "dark" && e.shot.iso > 0 && t.push(`ISO ${Math.round(e.shot.iso)}`), e.kind === "dark" && e.shot.shutter > 0 && t.push(We(e.shot.shutter)), t.join(" · ");
 }
 function We(e) {
 	return e >= .5 ? `${Number(e.toFixed(1))} s` : `1/${Math.round(1 / e)} s`;
 }
-var Ge = {
-	A: .5323,
-	B: 1.2015,
-	C: .0293,
-	D: -.4781,
-	E: 1.9616,
-	F: .2281,
-	G: +.051500000000000073.toFixed(4)
-}, Ke = [
-	[
-		1.6638,
-		-.5403,
-		-.1235
-	],
-	[
-		-.1671,
-		1.568,
-		-.4009
-	],
-	[
-		.0207,
-		-.4477,
-		1.427
-	]
-];
-function qe(e) {
-	let [[t, n, r], [i, a, o], [s, c, l]] = e, u = a * l - o * c, d = o * s - i * l, f = i * c - a * s, p = 1 / (t * u + n * d + r * f);
-	return [
-		[
-			u * p,
-			(r * c - n * l) * p,
-			(n * o - r * a) * p
-		],
-		[
-			d * p,
-			(t * l - r * s) * p,
-			(r * i - t * o) * p
-		],
-		[
-			f * p,
-			(n * s - t * c) * p,
-			(t * a - n * i) * p
-		]
-	];
-}
-function Je(e) {
-	return [
-		e[0][0],
-		e[1][0],
-		e[2][0],
-		e[0][1],
-		e[1][1],
-		e[2][1],
-		e[0][2],
-		e[1][2],
-		e[2][2]
-	];
-}
-function Ye(e, t) {
-	let n = e.rgbCam ?? Ke, r = be(e), i = typeof t == "number" && Number.isFinite(t) ? 2 ** -t : 1;
-	return [
-		0,
-		1,
-		2
-	].map((e) => [
-		0,
-		1,
-		2
-	].map((t) => n[e][t] * r[t] * i));
-}
 //#endregion
-//#region src/params.ts
-var N = "flat-field-dark-frame", P = `${N}.correct`, Xe = `${N}.panel`, F = (e) => `${P}.${e}`, I = {
-	dark: "darkMaster",
-	flat: "flatMaster"
-}, L = "auto", Ze = {
-	dark: !1,
-	darkPick: L,
-	flat: !1,
-	flatPick: L,
-	blur: "area",
-	radius: 32,
-	clip: 0
-}, R = {
-	darkPick: F("darkPick"),
-	flatPick: F("flatPick"),
-	blur: F("blur"),
-	radius: F("radius")
-}, z = {
-	darkOn: F("darkOn"),
-	flatOn: F("flatOn"),
-	clip: F("clip"),
-	pass: F("pass"),
-	toSensorUv: F("toSensorUv"),
-	sensorSize: F("sensorSize"),
-	toSensor: F("toSensor"),
-	toWorking: F("toWorking"),
-	darkSig: F("darkSig"),
-	flatSig: F("flatSig")
-}, B = {
-	dark: F(I.dark),
-	flat: F(I.flat)
-}, Qe = Je(Ke), $e = Je(qe(Ke)), et = [
-	1,
-	0,
-	0,
-	0,
-	1,
-	0,
-	0,
-	0,
-	1
-], V = [-1, -1], H = (e, t) => typeof e == "number" && Number.isFinite(e) ? e : t;
-function U(e) {
-	let t = e(R.blur), n = e(R.darkPick), r = e(R.flatPick);
-	return {
-		dark: H(e(z.darkOn), 0) > .5,
-		darkPick: typeof n == "string" && n ? n : L,
-		flat: H(e(z.flatOn), 0) > .5,
-		flatPick: typeof r == "string" && r ? r : L,
-		blur: c.includes(t) ? t : Ze.blur,
-		radius: Math.min(200, Math.max(0, Math.round(H(e(R.radius), Ze.radius)))),
-		clip: Math.min(1, Math.max(0, H(e(z.clip), 0)))
-	};
+//#region src/rt.ts
+var N, P;
+function Ge(e) {
+	P = e, N = e.react;
 }
-function tt(e) {
-	let t = {};
-	return e.dark !== void 0 && (t[z.darkOn] = +!!e.dark), e.flat !== void 0 && (t[z.flatOn] = +!!e.flat), e.darkPick !== void 0 && (t[R.darkPick] = e.darkPick), e.flatPick !== void 0 && (t[R.flatPick] = e.flatPick), e.blur !== void 0 && (t[R.blur] = e.blur), e.radius !== void 0 && (t[R.radius] = e.radius), e.clip !== void 0 && (t[z.clip] = e.clip), t;
-}
-var nt = [
-	...Object.values(R),
-	...Object.values(z),
-	...Object.values(B)
-];
 //#endregion
 //#region src/libraw.ts
-function rt(e) {
-	return `${location.origin}/__plugins__/${N}/${e}?v=1.0.1`;
-}
-var it = class {
+var Ke = class {
 	worker;
 	chain = Promise.resolve();
 	constructor() {
-		this.worker = new Worker(rt("dist/libraw/worker.js"), { type: "module" });
+		this.worker = new Worker(P.assetUrl("dist/libraw/worker.js"), { type: "module" });
 	}
 	call(e, t, n = []) {
 		let r = () => new Promise((r, i) => {
@@ -981,19 +850,19 @@ var it = class {
 		this.worker.terminate();
 	}
 };
-async function at(e, t) {
+async function qe(e, t) {
 	await e.open(await t.arrayBuffer());
 	let n = await e.rawImageData();
 	if (!n || n.data.length < n.raw_width * n.raw_height || n.raw_width === 0) throw Error("LibRaw read no sensor data from it");
 	return {
-		info: ge(await e.metadata(), he(n)),
+		info: he(await e.metadata(), me(n)),
 		readout: n
 	};
 }
-async function ot(e, t) {
+async function Je(e, t) {
 	await e.open(await t.arrayBuffer());
 	let n = await e.metadata(), r = (e) => typeof n?.[e] == "number" ? n[e] : 0;
-	return ge(n, he({
+	return he(n, me({
 		raw_width: r("raw_width"),
 		raw_height: r("raw_height"),
 		top_margin: r("top_margin"),
@@ -1002,9 +871,140 @@ async function ot(e, t) {
 		height: r("height")
 	}));
 }
+var Ye = {
+	A: .5323,
+	B: 1.2015,
+	C: .0293,
+	D: -.4781,
+	E: 1.9616,
+	F: .2281,
+	G: +.051500000000000073.toFixed(4)
+}, Xe = [
+	[
+		1.6638,
+		-.5403,
+		-.1235
+	],
+	[
+		-.1671,
+		1.568,
+		-.4009
+	],
+	[
+		.0207,
+		-.4477,
+		1.427
+	]
+];
+function Ze(e) {
+	let [[t, n, r], [i, a, o], [s, c, l]] = e, u = a * l - o * c, d = o * s - i * l, f = i * c - a * s, p = 1 / (t * u + n * d + r * f);
+	return [
+		[
+			u * p,
+			(r * c - n * l) * p,
+			(n * o - r * a) * p
+		],
+		[
+			d * p,
+			(t * l - r * s) * p,
+			(r * i - t * o) * p
+		],
+		[
+			f * p,
+			(n * s - t * c) * p,
+			(t * a - n * i) * p
+		]
+	];
+}
+function F(e) {
+	return [
+		e[0][0],
+		e[1][0],
+		e[2][0],
+		e[0][1],
+		e[1][1],
+		e[2][1],
+		e[0][2],
+		e[1][2],
+		e[2][2]
+	];
+}
+function Qe(e, t) {
+	let n = e.rgbCam ?? Xe, r = ye(e), i = typeof t == "number" && Number.isFinite(t) ? 2 ** -t : 1;
+	return [
+		0,
+		1,
+		2
+	].map((e) => [
+		0,
+		1,
+		2
+	].map((t) => n[e][t] * r[t] * i));
+}
 //#endregion
-//#region src/news.ts
-var st = `${N}.library`;
+//#region src/params.ts
+var I = "flat-field-dark-frame", L = `${I}.correct`, $e = `${I}.panel`, et = `${I}.library`, R = (e) => `${L}.${e}`, z = {
+	dark: "darkMaster",
+	flat: "flatMaster"
+}, B = "auto", tt = {
+	dark: !1,
+	darkPick: B,
+	flat: !1,
+	flatPick: B,
+	blur: "area",
+	radius: 32,
+	clip: 0
+}, V = {
+	darkPick: R("darkPick"),
+	flatPick: R("flatPick"),
+	blur: R("blur"),
+	radius: R("radius")
+}, H = {
+	darkOn: R("darkOn"),
+	flatOn: R("flatOn"),
+	clip: R("clip"),
+	pass: R("pass"),
+	toSensorUv: R("toSensorUv"),
+	sensorSize: R("sensorSize"),
+	toSensor: R("toSensor"),
+	toWorking: R("toWorking"),
+	darkSig: R("darkSig"),
+	flatSig: R("flatSig")
+}, U = {
+	dark: R(z.dark),
+	flat: R(z.flat)
+}, nt = F(Xe), rt = F(Ze(Xe)), it = [
+	1,
+	0,
+	0,
+	0,
+	1,
+	0,
+	0,
+	0,
+	1
+], W = [-1, -1], G = (e, t) => typeof e == "number" && Number.isFinite(e) ? e : t;
+function K(e) {
+	let t = e(V.blur), n = e(V.darkPick), r = e(V.flatPick);
+	return {
+		dark: G(e(H.darkOn), 0) > .5,
+		darkPick: typeof n == "string" && n ? n : B,
+		flat: G(e(H.flatOn), 0) > .5,
+		flatPick: typeof r == "string" && r ? r : B,
+		blur: c.includes(t) ? t : tt.blur,
+		radius: Math.min(200, Math.max(0, Math.round(G(e(V.radius), tt.radius)))),
+		clip: Math.min(1, Math.max(0, G(e(H.clip), 0)))
+	};
+}
+function at(e) {
+	let t = {};
+	return e.dark !== void 0 && (t[H.darkOn] = +!!e.dark), e.flat !== void 0 && (t[H.flatOn] = +!!e.flat), e.darkPick !== void 0 && (t[V.darkPick] = e.darkPick), e.flatPick !== void 0 && (t[V.flatPick] = e.flatPick), e.blur !== void 0 && (t[V.blur] = e.blur), e.radius !== void 0 && (t[V.radius] = e.radius), e.clip !== void 0 && (t[H.clip] = e.clip), t;
+}
+var ot = [
+	...Object.values(V),
+	...Object.values(H),
+	...Object.values(U)
+], st = `${I}.library`;
 function ct(e) {
 	if (typeof e != "object" || !e) return null;
 	let t = e;
@@ -1163,7 +1163,7 @@ function Tt(e, t, n, r, i, a) {
 			state: "none",
 			reason: `The ${a === "dark" ? "dark frame" : "flat field"} picked for this photo is no longer in the library.`
 		};
-		let n = ze(i, e);
+		let n = Be(i, e);
 		return n ? {
 			state: "none",
 			reason: n
@@ -1183,14 +1183,14 @@ function Tt(e, t, n, r, i, a) {
 		reason: o.reason
 	};
 }
-var W = {
-	[z.pass]: 0,
-	[z.darkSig]: V,
-	[z.flatSig]: V,
-	[B.dark]: "",
-	[B.flat]: ""
+var q = {
+	[H.pass]: 0,
+	[H.darkSig]: W,
+	[H.flatSig]: W,
+	[U.dark]: "",
+	[U.flat]: ""
 };
-function G(e, t, n, r) {
+function J(e, t, n, r) {
 	let i = {
 		blocked: null,
 		reading: !1,
@@ -1199,7 +1199,7 @@ function G(e, t, n, r) {
 	};
 	if (!e.dark && !e.flat) return {
 		status: i,
-		mirrors: W,
+		mirrors: q,
 		flatNeed: null
 	};
 	if (!t.isRaw) return {
@@ -1207,7 +1207,7 @@ function G(e, t, n, r) {
 			...i,
 			blocked: vt
 		},
-		mirrors: W,
+		mirrors: q,
 		flatNeed: null
 	};
 	if (!n) return {
@@ -1215,7 +1215,7 @@ function G(e, t, n, r) {
 			...i,
 			reading: !0
 		},
-		mirrors: W,
+		mirrors: q,
 		flatNeed: null
 	};
 	if (!n.info) return {
@@ -1223,10 +1223,10 @@ function G(e, t, n, r) {
 			...i,
 			blocked: `This photo can't be corrected: ${n.unsupported}.`
 		},
-		mirrors: W,
+		mirrors: q,
 		flatNeed: null
 	};
-	let a = n.info, o = Be(a), s = Tt(e.dark, e.darkPick, () => Le(o, r), r, o, "dark"), c = Tt(e.flat, e.flatPick, () => Re(o, r), r, o, "flat"), l = {
+	let a = n.info, o = Ve(a), s = Tt(e.dark, e.darkPick, () => Re(o, r), r, o, "dark"), c = Tt(e.flat, e.flatPick, () => ze(o, r), r, o, "flat"), l = {
 		blocked: null,
 		reading: !1,
 		dark: s,
@@ -1234,10 +1234,10 @@ function G(e, t, n, r) {
 	};
 	if (s.state !== "matched" && c.state !== "matched") return {
 		status: l,
-		mirrors: W,
+		mirrors: q,
 		flatNeed: null
 	};
-	let u = Ye(a, t.rawExposureBias), d = qe(u), f = s.state === "matched" ? bt(s.master.id) : "", p = c.state === "matched" ? {
+	let u = Qe(a, t.rawExposureBias), d = Ze(u), f = s.state === "matched" ? bt(s.master.id) : "", p = c.state === "matched" ? {
 		id: c.master.id,
 		blur: e.blur,
 		radius: e.radius,
@@ -1246,15 +1246,15 @@ function G(e, t, n, r) {
 	return {
 		status: l,
 		mirrors: {
-			[z.pass]: 1,
-			[z.toSensorUv]: _t(gt(a.flip, ht(t.rotation, t.orientation))),
-			[z.sensorSize]: [a.width, a.height],
-			[z.toSensor]: Je(d),
-			[z.toWorking]: Je(u),
-			[z.darkSig]: f ? y(f) : V,
-			[z.flatSig]: p ? y(p.name) : V,
-			[B.dark]: f,
-			[B.flat]: p?.name ?? ""
+			[H.pass]: 1,
+			[H.toSensorUv]: _t(gt(a.flip, ht(t.rotation, t.orientation))),
+			[H.sensorSize]: [a.width, a.height],
+			[H.toSensor]: F(d),
+			[H.toWorking]: F(u),
+			[H.darkSig]: f ? y(f) : W,
+			[H.flatSig]: p ? y(p.name) : W,
+			[U.dark]: f,
+			[U.flat]: p?.name ?? ""
 		},
 		flatNeed: p
 	};
@@ -1269,7 +1269,7 @@ function Et(e, t) {
 }
 //#endregion
 //#region src/storage.ts
-var Dt = "safelight-flat-field-dark-frame", Ot = 3, K = "masters", q = "summaries", J = "photos", kt = ["flatUses"], At = "Close Safelight's other windows to finish updating the calibration library.", jt = class {
+var Dt = "safelight-flat-field-dark-frame", Ot = 3, Y = "masters", X = "summaries", Z = "photos", kt = ["flatUses"], At = "Close Safelight's other windows to finish updating the calibration library.", jt = class {
 	factory;
 	opened = null;
 	notes = /* @__PURE__ */ new Set();
@@ -1302,13 +1302,13 @@ var Dt = "safelight-flat-field-dark-frame", Ot = 3, K = "masters", q = "summarie
 };
 function Mt(e, t, n) {
 	for (let t of [
-		K,
-		q,
-		J
+		Y,
+		X,
+		Z
 	]) e.objectStoreNames.contains(t) || e.createObjectStore(t);
 	for (let t of kt) e.objectStoreNames.contains(t) && e.deleteObjectStore(t);
 	if (n === 0 || n >= 3) return;
-	let r = t.objectStore(q), i = t.objectStore(K).openCursor();
+	let r = t.objectStore(X), i = t.objectStore(Y).openCursor();
 	i.onsuccess = () => {
 		let e = i.result;
 		if (!e) return;
@@ -1317,7 +1317,7 @@ function Mt(e, t, n) {
 	};
 }
 var Nt = new jt(() => typeof indexedDB > "u" ? void 0 : indexedDB), Pt = () => Nt.get();
-function Y(e, t, n) {
+function Q(e, t, n) {
 	return Pt().then((r) => new Promise((i, a) => {
 		if (!r) return i(null);
 		let o = r.transaction(e, t), s = n(o);
@@ -1325,29 +1325,29 @@ function Y(e, t, n) {
 	}));
 }
 async function Ft() {
-	return await Y([q], "readonly", (e) => e.objectStore(q).getAll()) ?? [];
+	return await Q([X], "readonly", (e) => e.objectStore(X).getAll()) ?? [];
 }
 async function It(e) {
-	return Y([q], "readonly", (t) => t.objectStore(q).get(e));
+	return Q([X], "readonly", (t) => t.objectStore(X).get(e));
 }
 async function Lt(e) {
-	return Y([K], "readonly", (t) => t.objectStore(K).get(e));
+	return Q([Y], "readonly", (t) => t.objectStore(Y).get(e));
 }
 async function Rt(e) {
-	await Y([K, q], "readwrite", (t) => {
-		t.objectStore(K).put(e, e.summary.id), t.objectStore(q).put(e.summary, e.summary.id);
+	await Q([Y, X], "readwrite", (t) => {
+		t.objectStore(Y).put(e, e.summary.id), t.objectStore(X).put(e.summary, e.summary.id);
 	});
 }
 async function zt(e) {
-	await Y([K, q], "readwrite", (t) => {
-		t.objectStore(K).delete(e), t.objectStore(q).delete(e);
+	await Q([Y, X], "readwrite", (t) => {
+		t.objectStore(Y).delete(e), t.objectStore(X).delete(e);
 	});
 }
 async function Bt(e) {
-	return Y([J], "readonly", (t) => t.objectStore(J).get(e));
+	return Q([Z], "readonly", (t) => t.objectStore(Z).get(e));
 }
 async function Vt(e, t) {
-	await Y([J], "readwrite", (n) => void n.objectStore(J).put(t, e));
+	await Q([Z], "readwrite", (n) => void n.objectStore(Z).put(t, e));
 }
 var Ht = {
 	loadSummaries: Ft,
@@ -1361,7 +1361,7 @@ var Ht = {
 };
 //#endregion
 //#region src/glsl.ts
-function X(e) {
+function $(e) {
 	let t = e.toPrecision(10);
 	if (/e/i.test(t)) {
 		let [e, n] = t.split(/e/i);
@@ -1369,21 +1369,21 @@ function X(e) {
 	}
 	return t.includes(".") ? t : `${t}.0`;
 }
-var { A: Ut, B: Wt, C: Gt, D: Kt, E: qt, F: Jt, G: Z } = Ge, Yt = -1e4, Xt = `${`
+var { A: Ut, B: Wt, C: Gt, D: Kt, E: qt, F: Jt, G: Yt } = Ye, Xt = -1e4, Zt = `${`
 float ffBase(float x) {
   float c = clamp(x, 0.0, 1.0);
-  return c * ((${X(Ut)} * c + ${X(Wt)}) * c + ${X(Gt)}) / (((${X(Kt)} * c + ${X(qt)}) * c + ${X(Jt)}) * c + ${X(Z)})
-       + max(x - 1.0, 0.0) + min(x, 0.0) * ${X(Gt / Z)};
+  return c * ((${$(Ut)} * c + ${$(Wt)}) * c + ${$(Gt)}) / (((${$(Kt)} * c + ${$(qt)}) * c + ${$(Jt)}) * c + ${$(Yt)})
+       + max(x - 1.0, 0.0) + min(x, 0.0) * ${$(Gt / Yt)};
 }
 float ffUnbase(float y) {
   if (y >= 1.0) return y;
-  if (y <= 0.0) return y * ${X(Z / Gt)};
+  if (y <= 0.0) return y * ${$(Yt / Gt)};
   float c = y * y;
-  float a = ${X(Ut)} - y * ${X(Kt)};
-  float b = ${X(Wt)} - y * ${X(qt)};
-  float k = ${X(Gt)} - y * ${X(Jt)};
+  float a = ${$(Ut)} - y * ${$(Kt)};
+  float b = ${$(Wt)} - y * ${$(qt)};
+  float k = ${$(Gt)} - y * ${$(Jt)};
   for (int i = 0; i < 6; i++) {
-    float p = ((a * c + b) * c + k) * c - y * ${X(Z)};
+    float p = ((a * c + b) * c + k) * c - y * ${$(Yt)};
     float dp = (3.0 * a * c + 2.0 * b) * c + k;
     c = clamp(c - p / dp, 0.0, 1.0);
   }
@@ -1401,14 +1401,14 @@ float ffPacked(sampler2D t, highp int row0, highp int i) {
   int k = i - texel * 4;
   return k == 0 ? v.x : k == 1 ? v.y : k == 2 ? v.z : v.w;
 }
-`, Zt = `
+`, Qt = `
 {
   if (!uSrcLinear) {
-    c = vec3(${X(Yt)});
+    c = vec3(${$(Xt)});
   } else {
     float passLong = max(1.0 / uTexel.x, 1.0 / uTexel.y);
     float sourceLong = uSourceSize.x > 0.0 ? max(uSourceSize.x, uSourceSize.y) : passLong;
-    float r = max(1.5, ${X(3)} * passLong / sourceLong);
+    float r = max(1.5, ${$(3)} * passLong / sourceLong);
     vec3 sum = vec3(0.0);
     vec3 top = vec3(0.0);
     float topLuma = -1e30;
@@ -1424,15 +1424,15 @@ float ffPacked(sampler2D t, highp int row0, highp int i) {
     }
     c = (sum - top) / 7.0;
   }
-}`, Qt = `
+}`, $t = `
 {
   vec2 ffS = (toSensorUv * vec3(srcUv, 1.0)).xy * sensorSize;
   vec2 ffW = fwidth(ffS);
   float ffSpan = max(ffW.x, ffW.y);
   vec4 ffD0 = ffAt(darkMaster, 0, 0);
   vec4 ffF0 = ffAt(flatMaster, 0, 0);
-  bool ffDark = darkOn > 0.5 && ffD0.x == ${X(_)} && ffD0.y == darkSig.x && ffD0.z == darkSig.y && ffSizeIs(ffAt(darkMaster, 4, 0), sensorSize);
-  bool ffFlat = flatOn > 0.5 && ffF0.x == ${X(v)} && ffF0.y == flatSig.x && ffF0.z == flatSig.y && ffSizeIs(ffAt(flatMaster, 2, 0), sensorSize);
+  bool ffDark = darkOn > 0.5 && ffD0.x == ${$(_)} && ffD0.y == darkSig.x && ffD0.z == darkSig.y && ffSizeIs(ffAt(darkMaster, 4, 0), sensorSize);
+  bool ffFlat = flatOn > 0.5 && ffF0.x == ${$(v)} && ffF0.y == flatSig.x && ffF0.z == flatSig.y && ffSizeIs(ffAt(flatMaster, 2, 0), sensorSize);
   if ((ffDark || ffFlat) && pass > 0.5 && stageResult.r > -1000.0) {
     vec3 ffX0 = ffLinear3(lin);
     vec3 ffX = ffX0;
@@ -1448,7 +1448,7 @@ float ffPacked(sampler2D t, highp int row0, highp int i) {
         vec4 te = ffAt(darkMaster, k % 256, int(h2.w) + k / 256);
         highp int start = int(ffJoin(te.x, te.y));
         int count = int(te.z);
-        float r0 = ${X(1)} + 0.5 * ffSpan;
+        float r0 = ${$(1)} + 0.5 * ffSpan;
         for (int i = 0; i < 8; i++) {
           if (i >= count) break;
           highp int n = start + i;
@@ -1482,9 +1482,9 @@ float ffPacked(sampler2D t, highp int row0, highp int i) {
     lin += uApplyBaseCurve ? ffBase3(ffX1) - ffBase3(ffX0) : ffX1 - ffX0;
   }
 }`;
-function $t() {
+function en() {
 	return {
-		id: P,
+		id: L,
 		name: "Flat field and dark frame",
 		phase: "decode",
 		priority: 1,
@@ -1529,7 +1529,7 @@ function $t() {
 			{
 				key: "toSensorUv",
 				glslType: "mat3",
-				default: et
+				default: it
 			},
 			{
 				key: "sensorSize",
@@ -1539,35 +1539,35 @@ function $t() {
 			{
 				key: "toSensor",
 				glslType: "mat3",
-				default: $e
+				default: rt
 			},
 			{
 				key: "toWorking",
 				glslType: "mat3",
-				default: Qe
+				default: nt
 			},
 			{
 				key: "darkSig",
 				glslType: "vec2",
-				default: V
+				default: W
 			},
 			{
 				key: "flatSig",
 				glslType: "vec2",
-				default: V
+				default: W
 			}
 		],
 		textures: [{
-			key: I.dark,
+			key: z.dark,
 			kind: "dynamic",
 			format: "rgba16f"
 		}, {
-			key: I.flat,
+			key: z.flat,
 			kind: "dynamic",
 			format: "rgba16f"
 		}],
 		passes: [{
-			glsl: Zt,
+			glsl: Qt,
 			uniforms: [{
 				key: "pass",
 				glslType: "float",
@@ -1583,8 +1583,8 @@ function $t() {
 			}
 		}],
 		reads: "source",
-		helpers: Xt,
-		glsl: Qt,
+		helpers: Zt,
+		glsl: $t,
 		dormantWhen: {
 			darkOn: 0,
 			flatOn: 0
@@ -1593,33 +1593,33 @@ function $t() {
 }
 //#endregion
 //#region src/controller.ts
-var en = (e) => (t) => console.warn(`[flat-field-dark-frame] ${e}`, t);
-function tn(e) {
+var tn = (e) => (t) => console.warn(`[flat-field-dark-frame] ${e}`, t);
+function nn(e) {
 	return typeof e == "string" && e.startsWith("image/x-");
 }
-function nn(e) {
+function rn(e) {
 	return {
-		isRaw: tn(e.mimeType),
+		isRaw: nn(e.mimeType),
 		rotation: e.rotation,
 		orientation: e.exif?.orientation,
 		rawExposureBias: e.exif?.rawExposureBias
 	};
 }
-var rn = (e) => `${e.id}:${e.fileSize}:${e.dateCreated}`, an = (e) => ({
+var an = (e) => `${e.id}:${e.fileSize}:${e.dateCreated}`, on = (e) => ({
 	data: e.data,
 	width: e.width,
 	height: e.height,
 	format: "rgba16f",
 	version: 1
-}), on = [{
-	texture: I.dark,
-	name: B.dark,
-	signature: z.darkSig
+}), sn = [{
+	texture: z.dark,
+	name: U.dark,
+	signature: H.darkSig
 }, {
-	texture: I.flat,
-	name: B.flat,
-	signature: z.flatSig
-}], sn = class {
+	texture: z.flat,
+	name: U.flat,
+	signature: H.flatSig
+}], cn = class {
 	api;
 	summaries = /* @__PURE__ */ new Map();
 	sensors = /* @__PURE__ */ new Map();
@@ -1657,18 +1657,18 @@ var rn = (e) => `${e.id}:${e.fileSize}:${e.dateCreated}`, an = (e) => ({
 	}
 	constructor(e, t = {}) {
 		this.api = e, this.io = t.io ?? {
-			info: async (e) => ot(this.worker(), e),
+			info: async (e) => Je(this.worker(), e),
 			frames: () => {
-				let e = new it();
+				let e = new Ke();
 				return {
-					read: (t) => at(e, t),
+					read: (t) => qe(e, t),
 					dispose: () => e.dispose()
 				};
 			}
-		}, this.store = t.store ?? Ht, this.openNews = t.news ?? lt, this.flats = t.flats ?? new ue();
+		}, this.store = t.store ?? Ht, this.openNews = t.news ?? lt, this.flats = t.flats ?? new le();
 	}
 	async start() {
-		this.api.registerProcessingStage($t()), this.api.setStageTextureProvider(P, I.dark, (e) => this.darkTexture(e)), this.api.setStageTextureProvider(P, I.flat, (e, t) => this.flatTexture(e, t));
+		this.api.registerProcessingStage(en()), this.api.setStageTextureProvider(L, z.dark, (e) => this.darkTexture(e)), this.api.setStageTextureProvider(L, z.flat, (e, t) => this.flatTexture(e, t));
 		let e = this.api.stores.useDevelopStore;
 		this.unsubscribers.push(e.subscribe((e, t) => {
 			(e.photoId !== t.photoId || e.paramBag !== t.paramBag) && this.refresh();
@@ -1681,19 +1681,19 @@ var rn = (e) => `${e.id}:${e.fileSize}:${e.dateCreated}`, an = (e) => ({
 		t && this.unsubscribers.push(t);
 		let n;
 		this.inbox = new Promise((e) => n = e), this.line = this.openNews((e) => {
-			this.inbox = this.inbox.then(() => this.hear(e)).catch(en("news from another window couldn't be taken in"));
+			this.inbox = this.inbox.then(() => this.hear(e)).catch(tn("news from another window couldn't be taken in"));
 		});
 		try {
 			for (let e of await this.store.loadSummaries()) this.summaries.set(e.id, e);
 		} catch (e) {
-			en("the calibration library couldn't be read")(e);
+			tn("the calibration library couldn't be read")(e);
 		}
 		this.loaded = !0, n(), this.changedLibrary(), await this.refresh();
 	}
 	stop() {
 		this.running = !1;
 		for (let e of this.unsubscribers) e();
-		this.unsubscribers = [], this.line?.close(), this.line = null, this.wanted = null, this.setOverride({}), this.api.setStageTextureProvider(P, I.dark, null), this.api.setStageTextureProvider(P, I.flat, null), this.flats.dispose(), this.infoWorker?.dispose(), this.infoWorker = null, this.infoIdle && clearTimeout(this.infoIdle), this.api.unregisterProcessingStage(P);
+		this.unsubscribers = [], this.line?.close(), this.line = null, this.wanted = null, this.setOverride({}), this.api.setStageTextureProvider(L, z.dark, null), this.api.setStageTextureProvider(L, z.flat, null), this.flats.dispose(), this.infoWorker?.dispose(), this.infoWorker = null, this.infoIdle && clearTimeout(this.infoIdle), this.api.unregisterProcessingStage(L);
 	}
 	get masters() {
 		return this.summaryList;
@@ -1716,9 +1716,9 @@ var rn = (e) => `${e.id}:${e.fileSize}:${e.dateCreated}`, an = (e) => ({
 			total: t.length
 		}, this.emit();
 		try {
-			let r = Math.random().toString(36).slice(2, 10), i = await He(e, t.length, async (r) => {
+			let r = Math.random().toString(36).slice(2, 10), i = await Ue(e, t.length, async (r) => {
 				let i = await n.read(t[r]).catch((e) => {
-					throw new j(`${t[r].name} couldn't be read: ${e instanceof Error ? e.message : String(e)}.`);
+					throw new A(`${t[r].name} couldn't be read: ${e instanceof Error ? e.message : String(e)}.`);
 				});
 				return this.progress = {
 					kind: e,
@@ -1734,7 +1734,7 @@ var rn = (e) => `${e.id}:${e.fileSize}:${e.dateCreated}`, an = (e) => ({
 				id: r
 			}), this.changedLibrary(), this.refresh(), null;
 		} catch (e) {
-			return e instanceof j ? e.message : `The master couldn't be built: ${e instanceof Error ? e.message : String(e)}.`;
+			return e instanceof A ? e.message : `The master couldn't be built: ${e instanceof Error ? e.message : String(e)}.`;
 		} finally {
 			n.dispose(), this.progress = null, this.emit();
 		}
@@ -1746,13 +1746,13 @@ var rn = (e) => `${e.id}:${e.fileSize}:${e.dateCreated}`, an = (e) => ({
 		}));
 	}
 	forget(e) {
-		this.summaries.delete(e), this.flats.forget(e), this.api.dropStageTextureVariants(P, I.dark, bt(e)), this.api.dropStageTextureVariants(P, I.flat), this.changedLibrary(), this.refresh();
+		this.summaries.delete(e), this.flats.forget(e), this.api.dropStageTextureVariants(L, z.dark, bt(e)), this.api.dropStageTextureVariants(L, z.flat), this.changedLibrary(), this.refresh();
 	}
 	tell(e) {
 		try {
 			this.line?.post(e);
 		} catch (e) {
-			en("the other windows couldn't be told of a change to the library")(e);
+			tn("the other windows couldn't be told of a change to the library")(e);
 		}
 	}
 	async hear(e) {
@@ -1764,13 +1764,13 @@ var rn = (e) => `${e.id}:${e.fileSize}:${e.dateCreated}`, an = (e) => ({
 	}
 	async darkTexture(e) {
 		let t = xt(e), n = t ? await this.store.loadMaster(t) : null;
-		return n?.dark ? an(te(n.dark, e)) : null;
+		return n?.dark ? on(ee(n.dark, e)) : null;
 	}
 	async flatTexture(e, t) {
 		let n = wt(e);
 		if (!n) return null;
 		let r = await this.flats.make(n, async () => (await this.store.loadMaster(n.id))?.flat ?? null, t);
-		return r && an(r);
+		return r && on(r);
 	}
 	withMirrors(e) {
 		let t = this.api.stores.useDevelopStore.getState(), n = this.photo(t.photoId);
@@ -1778,9 +1778,9 @@ var rn = (e) => `${e.id}:${e.fileSize}:${e.dateCreated}`, an = (e) => ({
 		let r = {
 			...t.paramBag,
 			...e
-		}, i = U((e) => r[e]), a = nn(n), o = this.sensors.get(rn(n)) ?? null;
+		}, i = K((e) => r[e]), a = rn(n), o = this.sensors.get(an(n)) ?? null;
 		if (!i.dark && !i.flat || a.isRaw && !o) return e;
-		let s = Et(r, G(i, a, o, this.masters).mirrors) ?? {};
+		let s = Et(r, J(i, a, o, this.masters).mirrors) ?? {};
 		return this.follow(n.id, {
 			...r,
 			...s
@@ -1791,17 +1791,17 @@ var rn = (e) => `${e.id}:${e.fileSize}:${e.dateCreated}`, an = (e) => ({
 	}
 	follow(e, t) {
 		let n = {};
-		for (let e of on) {
+		for (let e of sn) {
 			let r = t[e.name];
 			n[e.name] = typeof r == "string" ? r : "";
 		}
-		let r = e === this.shownFor ? on.filter((e) => n[e.name] && n[e.name] !== this.shown[e.name]) : [];
+		let r = e === this.shownFor ? sn.filter((e) => n[e.name] && n[e.name] !== this.shown[e.name]) : [];
 		if (e !== this.shownFor || r.length === 0) {
 			this.shownFor = e, this.shown = n, this.target = null, this.wanted = null, this.setOverride({});
 			return;
 		}
 		let i = {};
-		for (let e of on) {
+		for (let e of sn) {
 			let t = this.shown[e.name];
 			r.includes(e) ? t && (i[e.name] = t, i[e.signature] = y(t)) : this.shown[e.name] = n[e.name];
 		}
@@ -1819,7 +1819,7 @@ var rn = (e) => `${e.id}:${e.fileSize}:${e.dateCreated}`, an = (e) => ({
 			for (; this.wanted && this.running;) {
 				let e = this.wanted, t = this.target;
 				this.wanted = null;
-				let n = await Promise.all(e.map(([e, t]) => this.api.prepareStageTextureVariant(P, e, t).then(() => null, (n) => [
+				let n = await Promise.all(e.map(([e, t]) => this.api.prepareStageTextureVariant(L, e, t).then(() => null, (n) => [
 					e,
 					t,
 					n instanceof Error ? n.message : String(n)
@@ -1827,13 +1827,13 @@ var rn = (e) => `${e.id}:${e.fileSize}:${e.dateCreated}`, an = (e) => ({
 				if (t === this.target) {
 					this.target = null;
 					for (let [t, n] of e) {
-						let e = on.find((e) => e.texture === t);
+						let e = sn.find((e) => e.texture === t);
 						e && (this.shown[e.name] = n);
 					}
 					for (let e of n) {
 						if (!e) continue;
 						let [t, n, r] = e;
-						en(`the texture ${n} couldn't be made`)(r), this.unmadeNote = `The ${t === I.dark ? "dark frame" : "flat field"} for these settings couldn't be made (${r}), so the photo is shown without it.`;
+						tn(`the texture ${n} couldn't be made`)(r), this.unmadeNote = `The ${t === z.dark ? "dark frame" : "flat field"} for these settings couldn't be made (${r}), so the photo is shown without it.`;
 					}
 					this.setOverride({}), this.emit();
 				}
@@ -1851,10 +1851,10 @@ var rn = (e) => `${e.id}:${e.fileSize}:${e.dateCreated}`, an = (e) => ({
 	worker() {
 		return this.infoIdle && clearTimeout(this.infoIdle), this.infoIdle = setTimeout(() => {
 			this.infoWorker?.dispose(), this.infoWorker = null;
-		}, 3e4), this.infoWorker ??= new it(), this.infoWorker;
+		}, 3e4), this.infoWorker ??= new Ke(), this.infoWorker;
 	}
 	sensorOf(e) {
-		let t = rn(e), n = this.sensors.get(t);
+		let t = an(e), n = this.sensors.get(t);
 		if (n) return n;
 		let r = this.reading.get(t);
 		return r || (r = (async () => {
@@ -1867,7 +1867,7 @@ var rn = (e) => `${e.id}:${e.fileSize}:${e.dateCreated}`, an = (e) => ({
 			};
 			let i;
 			try {
-				let e = await this.io.info(r), t = _e(e);
+				let e = await this.io.info(r), t = ge(e);
 				i = t ? {
 					info: null,
 					unsupported: t
@@ -1896,13 +1896,13 @@ var rn = (e) => `${e.id}:${e.fileSize}:${e.dateCreated}`, an = (e) => ({
 			});
 			return;
 		}
-		let n = e.paramBag, r = U((e) => n[e]), i = nn(t), a = null;
+		let n = e.paramBag, r = K((e) => n[e]), i = rn(t), a = null;
 		if ((r.dark || r.flat) && i.isRaw) {
 			let e = this.sensorOf(t);
-			if (e instanceof Promise) return this.setStatus(G(r, i, null, this.masters).status), await e, this.refresh();
+			if (e instanceof Promise) return this.setStatus(J(r, i, null, this.masters).status), await e, this.refresh();
 			a = e;
 		}
-		let o = G(r, i, a, this.masters);
+		let o = J(r, i, a, this.masters);
 		if (this.setStatus(o.status), !r.dark && !r.flat) return this.follow(t.id, {});
 		let s = this.api.stores.useDevelopStore.getState();
 		if (s.photoId !== t.id) return;
@@ -1919,11 +1919,11 @@ var rn = (e) => `${e.id}:${e.fileSize}:${e.dateCreated}`, an = (e) => ({
 		let t = 0, n = 0;
 		for (let r of e) {
 			let e = this.photo(r);
-			if (!e || !tn(e.mimeType)) {
+			if (!e || !nn(e.mimeType)) {
 				n++;
 				continue;
 			}
-			let i = await this.sensorOf(e), a = { ...tt({
+			let i = await this.sensorOf(e), a = { ...at({
 				dark: !0,
 				flat: !0,
 				darkPick: "auto",
@@ -1931,14 +1931,14 @@ var rn = (e) => `${e.id}:${e.fileSize}:${e.dateCreated}`, an = (e) => ({
 			}) }, o = await this.api.catalog.getEditState(r), s = o?.stack[o.currentIndex], c = {
 				...s?.paramBag ?? {},
 				...a
-			}, l = G(U((e) => c[e]), nn(e), i, this.masters);
+			}, l = J(K((e) => c[e]), rn(e), i, this.masters);
 			if (l.status.dark.state !== "matched" && l.status.flat.state !== "matched") {
 				n++;
 				continue;
 			}
 			let u = {
 				...c,
-				...tt({
+				...at({
 					dark: l.status.dark.state === "matched",
 					flat: l.status.flat.state === "matched"
 				}),
@@ -1970,126 +1970,106 @@ var rn = (e) => `${e.id}:${e.fileSize}:${e.dateCreated}`, an = (e) => ({
 			skipped: n
 		};
 	}
-}, cn = {
+}, ln = {
 	area: "Area",
 	vertical: "Vertical",
 	horizontal: "Horizontal",
 	"vertical-horizontal": "Vertical + horizontal"
 };
-Object.values(R);
-//#endregion
-//#region src/rt.ts
-var Q, $;
-function ln(e) {
-	$ = e, Q = e.react;
-}
+Object.values(V);
 //#endregion
 //#region src/Panel.tsx
-var un = {
-	fontSize: "10px",
-	color: "var(--color-text-muted)",
-	lineHeight: 1.4
-};
-function dn(e) {
-	let [, t] = Q.useReducer((e) => e + 1, 0);
-	return Q.useEffect(() => e.subscribe(t), [e]), e;
+function un(e) {
+	let [, t] = N.useReducer((e) => e + 1, 0);
+	return N.useEffect(() => e.subscribe(t), [e]), e;
 }
-function fn(e) {
+function dn(e) {
 	if (e.state === "off") return null;
 	if (e.state === "none") return e.reason;
 	let t = e.master, n = t.kind === "dark" ? `ISO ${Math.round(t.shot.iso)}, ${We(t.shot.shutter)}` : `${t.shot.lens || "no lens recorded"}, f/${t.shot.aperture.toFixed(1)}, ${Math.round(t.shot.focal)} mm`, r = t.frames.length === 1 ? "1 frame" : `${t.frames.length} frames`;
 	return `${e.auto ? "Matched" : "Using"}: ${n} (${r}).`;
 }
-function pn(e, t, n) {
+function fn(e, t, n) {
 	return [{
-		value: L,
-		label: n.state === "matched" && n.auto ? `Automatic (${Ue(n.master)})` : "Automatic"
+		value: B,
+		label: n.state === "matched" && n.auto ? `Automatic (${M(n.master)})` : "Automatic"
 	}, ...t.filter((t) => t.kind === e).map((e) => ({
 		value: e.id,
-		label: `${Ue(e)} · ${e.shot.model}`
+		label: `${M(e)} · ${e.shot.model}`
 	}))];
 }
-function mn(e) {
+function pn(e) {
 	return function() {
-		let t = dn(e), { Slider: n } = $.components, { Toggle: r, Select: i, Stack: a, Button: o, Field: s, Section: l } = $.ui, u = $.develop.useParamScope(), d = U(u.getParam), f = t.status, p = (e) => u.commit(e), m = (e, n) => {
-			u.setParams(t.withMirrors(tt(e))), n && p(n);
-		}, h = (e) => e ? /* @__PURE__ */ Q.createElement("div", { style: un }, e) : null;
-		return /* @__PURE__ */ Q.createElement(a, {
+		let t = un(e), { Slider: n } = P.components, { Toggle: r, Select: i, Stack: a, Button: o, Field: s, Section: l, tokens: u } = P.ui, d = P.develop.useParamScope(), f = K(d.getParam), p = t.status, m = (e) => d.commit(e), h = (e, n) => {
+			d.setParams(t.withMirrors(at(e))), n && m(n);
+		}, g = (e) => e ? /* @__PURE__ */ N.createElement("div", { style: {
+			fontSize: "10px",
+			color: u.textMuted,
+			lineHeight: 1.4
+		} }, e) : null;
+		return /* @__PURE__ */ N.createElement(a, {
 			gap: 8,
 			style: { padding: "6px 8px 8px" }
-		}, h(t.notice), h(f.blocked), f.reading ? h("Reading the photo's sensor details…") : null, /* @__PURE__ */ Q.createElement(l, {
+		}, g(t.notice), g(p.blocked), p.reading ? g("Reading the photo's sensor details…") : null, /* @__PURE__ */ N.createElement(l, {
 			title: "Dark frame",
-			right: /* @__PURE__ */ Q.createElement(r, {
-				checked: d.dark,
+			right: /* @__PURE__ */ N.createElement(r, {
+				checked: f.dark,
 				ariaLabel: "Dark frame",
-				onChange: (e) => m({ dark: e }, e ? "Dark frame on" : "Dark frame off")
+				onChange: (e) => h({ dark: e }, e ? "Dark frame on" : "Dark frame off")
 			})
-		}, /* @__PURE__ */ Q.createElement(a, { gap: 6 }, /* @__PURE__ */ Q.createElement(i, {
-			value: d.darkPick,
+		}, /* @__PURE__ */ N.createElement(a, { gap: 6 }, /* @__PURE__ */ N.createElement(i, {
+			value: f.darkPick,
 			ariaLabel: "Dark frame master",
-			options: pn("dark", t.masters, f.dark),
-			onChange: (e) => m({ darkPick: e }, "Dark frame master")
-		}), h(fn(f.dark)))), /* @__PURE__ */ Q.createElement(l, {
+			options: fn("dark", t.masters, p.dark),
+			onChange: (e) => h({ darkPick: e }, "Dark frame master")
+		}), g(dn(p.dark)))), /* @__PURE__ */ N.createElement(l, {
 			title: "Flat field",
-			right: /* @__PURE__ */ Q.createElement(r, {
-				checked: d.flat,
+			right: /* @__PURE__ */ N.createElement(r, {
+				checked: f.flat,
 				ariaLabel: "Flat field",
-				onChange: (e) => m({ flat: e }, e ? "Flat field on" : "Flat field off")
+				onChange: (e) => h({ flat: e }, e ? "Flat field on" : "Flat field off")
 			})
-		}, /* @__PURE__ */ Q.createElement(a, { gap: 6 }, /* @__PURE__ */ Q.createElement(i, {
-			value: d.flatPick,
+		}, /* @__PURE__ */ N.createElement(a, { gap: 6 }, /* @__PURE__ */ N.createElement(i, {
+			value: f.flatPick,
 			ariaLabel: "Flat field master",
-			options: pn("flat", t.masters, f.flat),
-			onChange: (e) => m({ flatPick: e }, "Flat field master")
-		}), h(fn(f.flat)), /* @__PURE__ */ Q.createElement(s, { label: "Blur" }, /* @__PURE__ */ Q.createElement(i, {
-			value: d.blur,
+			options: fn("flat", t.masters, p.flat),
+			onChange: (e) => h({ flatPick: e }, "Flat field master")
+		}), g(dn(p.flat)), /* @__PURE__ */ N.createElement(s, { label: "Blur" }, /* @__PURE__ */ N.createElement(i, {
+			value: f.blur,
 			ariaLabel: "Blur type",
 			options: c.map((e) => ({
 				value: e,
-				label: cn[e]
+				label: ln[e]
 			})),
-			onChange: (e) => m({ blur: e }, "Flat field blur")
-		})), /* @__PURE__ */ Q.createElement(n, {
+			onChange: (e) => h({ blur: e }, "Flat field blur")
+		})), /* @__PURE__ */ N.createElement("div", { title: "A small radius also takes out dust spots; a large one corrects only the falloff." }, /* @__PURE__ */ N.createElement(n, {
 			label: "Blur radius",
-			value: d.radius,
+			value: f.radius,
 			min: 0,
 			max: 200,
 			step: 1,
-			defaultValue: Ze.radius,
-			onChange: (e) => m({ radius: Math.round(e) }),
-			onCommit: () => p("Flat field blur radius")
-		}), /* @__PURE__ */ Q.createElement(n, {
+			defaultValue: tt.radius,
+			onChange: (e) => h({ radius: Math.round(e) }),
+			onCommit: () => m("Flat field blur radius")
+		})), /* @__PURE__ */ N.createElement("div", { title: "Keeps the flat from lifting highlights past white." }, /* @__PURE__ */ N.createElement(n, {
 			label: "Clip control",
-			value: Math.round(d.clip * 100),
+			value: Math.round(f.clip * 100),
 			min: 0,
 			max: 100,
 			step: 1,
 			defaultValue: 0,
-			onChange: (e) => m({ clip: Math.min(100, Math.max(0, e)) / 100 }),
-			onCommit: () => p("Flat field clip control")
-		}), h("A small radius also takes out dust spots; a large one corrects only the falloff. Clip control keeps the flat from lifting highlights past white."))), /* @__PURE__ */ Q.createElement(o, {
+			onChange: (e) => h({ clip: Math.min(100, Math.max(0, e)) / 100 }),
+			onCommit: () => m("Flat field clip control")
+		})))), /* @__PURE__ */ N.createElement(o, {
 			size: "sm",
-			onClick: _n
+			onClick: () => P.windows.open(et)
 		}, "Calibration library…"));
 	};
 }
 //#endregion
-//#region src/LibraryDialog.tsx
-var hn = !1, gn = /* @__PURE__ */ new Set();
-function _n() {
-	hn = !0;
-	for (let e of gn) e(!0);
-}
-function vn() {
-	hn = !1;
-	for (let e of gn) e(!1);
-}
-function yn() {
-	let [e, t] = Q.useState(hn);
-	return Q.useEffect(() => (gn.add(t), () => void gn.delete(t)), []), e;
-}
-var bn = (/* @__PURE__ */ "3fr.ari.arw.bay.cr2.cr3.crw.dcr.dng.erf.fff.iiq.k25.kdc.mef.mos.mrw.nef.nrw.orf.pef.raf.raw.rw2.rwl.sr2.srf.srw.x3f".split(".")).map((e) => `.${e}`).join(",");
-function xn(e) {
+//#region src/LibraryWindow.tsx
+var mn = (/* @__PURE__ */ "3fr.ari.arw.bay.cr2.cr3.crw.dcr.dng.erf.fff.iiq.k25.kdc.mef.mos.mrw.nef.nrw.orf.pef.raf.raw.rw2.rwl.sr2.srf.srw.x3f".split(".")).map((e) => `.${e}`).join(",");
+function hn(e) {
 	let t = e.shot, n = [`${t.make} ${t.model}, ${t.width} × ${t.height}`];
 	e.kind === "flat" && n.push(`${t.lens || "No lens recorded"}, f/${t.aperture.toFixed(1)}, ${Math.round(t.focal)} mm`), n.push(`ISO ${Math.round(t.iso)}, ${We(t.shutter)}${t.temperature === null ? "" : `, ${t.temperature.toFixed(0)} °C`}`);
 	let r = t.timestamp ? new Date(t.timestamp).toLocaleDateString() : "date not recorded";
@@ -2097,144 +2077,115 @@ function xn(e) {
 	let i = e.blackSource === "masked" ? "from the masked border" : e.blackSource === "frame" ? "from the frames themselves" : "from the file";
 	return n.push(`Black level ${Math.round(e.black[1])} (${i}), white ${Math.round(e.white)}`), [...n, ...e.notes];
 }
-function Sn(e) {
+var gn = "RAW files shot with the lens cap on, at the ISO, exposure time and temperature of your photos. Several frames make a cleaner master.", _n = "RAW files of an evenly lit, featureless target, shot with the lens, aperture and focal length of your photos. Several frames make a cleaner master.";
+function vn(e) {
 	return function() {
-		let t = dn(e), n = yn(), { Button: r, Stack: i, Row: a, ProgressBar: o, Card: s, tokens: c, alertDialog: l, confirmDialog: u } = $.ui, d = Q.useRef(null), [f, p] = Q.useState("dark");
-		if (Q.useEffect(() => {
-			if (!n) return;
-			let e = (e) => e.key === "Escape" && vn();
-			return window.addEventListener("keydown", e), () => window.removeEventListener("keydown", e);
-		}, [n]), !n) return null;
-		let m = (e) => {
-			p(e), d.current?.click();
-		}, h = async (e) => {
+		let t = un(e), { Button: n, Stack: r, Row: i, ProgressBar: a, Card: o, tokens: s, alertDialog: c, confirmDialog: l } = P.ui, u = N.useRef(null), [d, f] = N.useState("dark"), p = (e) => {
+			f(e), u.current?.click();
+		}, m = async (e) => {
 			if (e.length === 0) return;
-			let n = await t.addMaster(f, e);
-			n && await l({
-				title: f === "dark" ? "Dark frames" : "Flat frames",
+			let n = await t.addMaster(d, e);
+			n && await c({
+				title: d === "dark" ? "Dark frames" : "Flat frames",
 				message: n
 			});
-		}, g = async (e) => {
-			await u({
+		}, h = async (e) => {
+			await l({
 				title: "Delete master",
-				message: `Delete ${Ue(e)}? Photos using it are no longer corrected.`,
+				message: `Delete ${M(e)}? Photos using it are no longer corrected.`,
 				confirmLabel: "Delete",
 				variant: "danger"
 			}) && await t.removeMaster(e.id);
-		}, _ = (e, n) => {
-			let o = t.masters.filter((t) => t.kind === e);
-			return /* @__PURE__ */ Q.createElement(i, { gap: 6 }, /* @__PURE__ */ Q.createElement("div", { style: { fontWeight: 600 } }, n), o.length === 0 ? /* @__PURE__ */ Q.createElement("div", { style: {
-				color: c.textMuted,
+		}, g = (e, a) => {
+			let c = t.masters.filter((t) => t.kind === e);
+			return /* @__PURE__ */ N.createElement(r, { gap: 6 }, /* @__PURE__ */ N.createElement("div", { style: { fontWeight: 600 } }, a), c.length === 0 ? /* @__PURE__ */ N.createElement("div", { style: {
+				color: s.textMuted,
 				fontSize: 11
-			} }, "None yet.") : null, o.map((e) => /* @__PURE__ */ Q.createElement(s, { key: e.id }, /* @__PURE__ */ Q.createElement(a, {
+			} }, "None yet.") : null, c.map((e) => /* @__PURE__ */ N.createElement(o, { key: e.id }, /* @__PURE__ */ N.createElement(i, {
 				justify: "space-between",
 				align: "flex-start"
-			}, /* @__PURE__ */ Q.createElement(i, { gap: 2 }, /* @__PURE__ */ Q.createElement("div", { style: { fontWeight: 600 } }, Ue(e)), xn(e).map((e) => /* @__PURE__ */ Q.createElement("div", {
+			}, /* @__PURE__ */ N.createElement(r, { gap: 2 }, /* @__PURE__ */ N.createElement("div", { style: { fontWeight: 600 } }, M(e)), hn(e).map((e) => /* @__PURE__ */ N.createElement("div", {
 				key: e,
 				style: {
 					fontSize: 11,
-					color: c.textSecondary
+					color: s.textSecondary
 				}
-			}, e))), /* @__PURE__ */ Q.createElement(r, {
+			}, e))), /* @__PURE__ */ N.createElement(n, {
 				size: "sm",
 				variant: "danger",
-				onClick: () => void g(e)
+				onClick: () => void h(e)
 			}, "Delete")))));
 		};
-		return $.reactDom.createPortal(/* @__PURE__ */ Q.createElement("div", {
-			role: "presentation",
-			onMouseDown: (e) => e.target === e.currentTarget && vn(),
-			style: {
-				position: "fixed",
-				inset: 0,
-				zIndex: 1e3,
-				display: "flex",
-				alignItems: "center",
-				justifyContent: "center",
-				background: "rgba(0, 0, 0, 0.5)"
-			}
-		}, /* @__PURE__ */ Q.createElement("div", {
-			role: "dialog",
-			"aria-modal": "true",
-			"aria-label": "Calibration library",
-			style: {
-				width: 460,
-				maxHeight: "80vh",
-				overflowY: "auto",
-				padding: 16,
-				borderRadius: 8,
-				background: c.surface2,
-				border: `1px solid ${c.border}`,
-				color: c.textPrimary
-			}
-		}, /* @__PURE__ */ Q.createElement(i, { gap: 12 }, /* @__PURE__ */ Q.createElement("div", { style: { fontWeight: 600 } }, "Calibration library"), /* @__PURE__ */ Q.createElement("div", { style: {
-			fontSize: 11,
-			color: c.textMuted
-		} }, "Dark frames: RAW files shot with the lens cap on, at the ISO, exposure time and temperature of your photos. Flat frames: an evenly lit, featureless target shot with the lens, aperture and focal length of your photos. Several frames of each make a cleaner master."), /* @__PURE__ */ Q.createElement(a, { gap: 8 }, /* @__PURE__ */ Q.createElement(r, {
+		return /* @__PURE__ */ N.createElement("div", { style: {
+			padding: 16,
+			color: s.textPrimary
+		} }, /* @__PURE__ */ N.createElement(r, { gap: 12 }, /* @__PURE__ */ N.createElement(i, { gap: 8 }, /* @__PURE__ */ N.createElement(n, {
 			size: "sm",
+			title: gn,
 			disabled: !!t.progress,
-			onClick: () => m("dark")
-		}, "Add dark frames…"), /* @__PURE__ */ Q.createElement(r, {
+			onClick: () => p("dark")
+		}, "Add dark frames…"), /* @__PURE__ */ N.createElement(n, {
 			size: "sm",
+			title: _n,
 			disabled: !!t.progress,
-			onClick: () => m("flat")
-		}, "Add flat frames…")), t.progress ? /* @__PURE__ */ Q.createElement(i, { gap: 4 }, /* @__PURE__ */ Q.createElement("div", { style: { fontSize: 11 } }, "Reading ", t.progress.kind, " frame ", Math.min(t.progress.done + 1, t.progress.total), " of ", t.progress.total, "…"), /* @__PURE__ */ Q.createElement(o, { value: t.progress.done / Math.max(1, t.progress.total) })) : null, _("dark", "Dark frames"), _("flat", "Flat fields"), /* @__PURE__ */ Q.createElement(a, { justify: "flex-end" }, /* @__PURE__ */ Q.createElement(r, {
-			variant: "ghost",
-			onClick: vn
-		}, "Close"))), /* @__PURE__ */ Q.createElement("input", {
-			ref: d,
+			onClick: () => p("flat")
+		}, "Add flat frames…")), t.progress ? /* @__PURE__ */ N.createElement(r, { gap: 4 }, /* @__PURE__ */ N.createElement("div", { style: { fontSize: 11 } }, "Reading ", t.progress.kind, " frame ", Math.min(t.progress.done + 1, t.progress.total), " of ", t.progress.total, "…"), /* @__PURE__ */ N.createElement(a, { value: t.progress.done / Math.max(1, t.progress.total) })) : null, g("dark", "Dark frames"), g("flat", "Flat fields")), /* @__PURE__ */ N.createElement("input", {
+			ref: u,
 			type: "file",
 			multiple: !0,
-			accept: bn,
+			accept: mn,
 			"aria-label": "Calibration frames",
 			style: { display: "none" },
 			onChange: (e) => {
 				let t = [...e.currentTarget.files ?? []];
-				e.currentTarget.value = "", h(t);
+				e.currentTarget.value = "", m(t);
 			}
-		}))), document.body);
+		}));
 	};
 }
 //#endregion
 //#region src/index.tsx
-var Cn = `${N}.match`, wn = null;
-function Tn(e, t) {
+var yn = `${I}.match`, bn = null;
+function xn(e, t) {
 	let n = `${e === 1 ? "1 photo now uses" : `${e} photos now use`} the best matching dark frame and flat field.`;
 	return t ? `${n} ${t === 1 ? "1 photo was" : `${t} photos were`} left alone: not a RAW, no matching frame, or never opened in Develop.` : n;
 }
-function En(e) {
-	ln(e);
-	let t = new sn(e);
-	wn = t, t.start();
-	let n = mn(t), r = Sn(t);
-	e.registerPanel({
-		id: Xe,
+function Sn(e) {
+	Ge(e);
+	let t = new cn(e);
+	bn = t, t.start(), e.registerPanel({
+		id: $e,
 		title: "Flat Field & Dark Frame",
-		component: () => /* @__PURE__ */ Q.createElement(Q.Fragment, null, /* @__PURE__ */ Q.createElement(n, null), /* @__PURE__ */ Q.createElement(r, null)),
+		component: pn(t),
 		defaultDock: {
 			module: "develop",
 			direction: "right",
 			width: 268
 		},
+		modules: ["develop"],
 		onReset: () => {
 			let t = e.stores.useDevelopStore.getState();
-			t.setDynParams(Object.fromEntries(nt.map((e) => [e, void 0]))), t.commitEdit("Flat field and dark frame reset");
+			t.setDynParams(Object.fromEntries(ot.map((e) => [e, void 0]))), t.commitEdit("Flat field and dark frame reset");
 		}
+	}), e.registerWindow({
+		id: et,
+		title: "Calibration library",
+		component: vn(t)
 	}), e.registerGridMenuItem({
-		id: Cn,
+		id: yn,
 		label: (e) => e.length > 1 ? `Match calibration frames (${e.length})` : "Match calibration frames",
 		onClick: (n) => {
 			t.applyTo(n).then(({ applied: t, skipped: n }) => e.ui.alertDialog({
 				title: "Match calibration frames",
-				message: Tn(t, n)
+				message: xn(t, n)
 			}));
 		}
 	});
 }
-function Dn() {
-	wn?.stop(), wn = null;
+function Cn() {
+	bn?.stop(), bn = null;
 }
 //#endregion
-export { Cn as MENU_ID, En as activate, Dn as deactivate, Tn as matchedMessage };
+export { yn as MENU_ID, Sn as activate, Cn as deactivate, xn as matchedMessage };
 
 //# sourceMappingURL=index.js.map

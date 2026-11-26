@@ -6,7 +6,7 @@ import manifest from "../safelight.json";
 import { MENU_ID, activate, deactivate, matchedMessage } from "../src/index";
 import type { RawIo } from "../src/controller";
 import { DARK_MAGIC, FLAT_MAGIC, signature } from "../src/pack";
-import { CHOICE_KEYS, DEFAULT_CHOICES, EXT_ID, PANEL_ID, STAGE_ID, UNIFORM_KEYS, VARIANT_KEYS, choicePatch } from "../src/params";
+import { CHOICE_KEYS, DEFAULT_CHOICES, EXT_ID, LIBRARY_ID, PANEL_ID, STAGE_ID, UNIFORM_KEYS, VARIANT_KEYS, choicePatch } from "../src/params";
 import { darkVariant, flatVariant, parseFlatVariant } from "../src/resolve";
 import { correctionStage } from "../src/stage";
 import { fakeApi, memoryStore, photo, type Rig } from "./support/fake-api";
@@ -14,13 +14,14 @@ import type { EditState } from "../src/safelight";
 import { H, INFO, W, controllerOn, file, io, settle, withFile } from "./support/calibration";
 
 describe("activate", () => {
-  it("registers the stage, the panel in Develop and the Library menu item, named under the manifest's id", async () => {
+  it("registers the stage, the panel in Develop, the library window and the Library menu item, named under the manifest's id", async () => {
     const rig = fakeApi();
     activate(rig.api);
     await settle();
     expect(rig.stages.map((s) => s.id)).toEqual([STAGE_ID]);
     expect(rig.panels.map((p) => p.id)).toEqual([PANEL_ID]);
     expect(rig.menus.map((m) => m.id)).toEqual([MENU_ID]);
+    expect(rig.windows.map((w) => [w.id, w.title])).toEqual([[LIBRARY_ID, "Calibration library"]]);
     expect(EXT_ID).toBe(manifest.id);
     deactivate();
     expect(rig.stages).toEqual([]);
